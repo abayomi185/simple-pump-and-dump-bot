@@ -4,7 +4,7 @@ Install pip packages
 
 ```pip install -r requirements.txt``` 
 
-Edit config and create a new file named secrets.yaml
+Edit config and create a new file named secrets.yaml in the directory
 
 ```
    touch secrets.yaml
