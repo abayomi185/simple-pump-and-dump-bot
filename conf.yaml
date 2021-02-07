@@ -14,14 +14,14 @@ trade_configs:
     pairing: BTC
     #Currently, only market is available, keep unchanged
     order_type: market
-    #Amount from wallet to use for trade buy, integer only
-    buy_qty_from_wallet_percent: 100
+    #Amount from wallet to use for trade buy; range 0 to 1
+    buy_qty_from_wallet: 0.75
     #Profit margin multiplier; 2 equals 100% gain
-    profit_margin: 2
-    #Amount from wallet to use for trade sell, integer only
-    sell_qty_from_wallet_percent: 100
+    profit_margin: 3
+    #Amount from wallet to use for trade sell; range 0 to 1
+    sell_qty_from_wallet: 1
     #Timeout in milliseconds if profit margin doesn't reach intended value
-    sell_fallback_timeout_ms: 1200
+    sell_fallback_timeout_ms: 3000
 
   market-trade-two:
     pairing: BTC

@@ -7,8 +7,10 @@ from colorama import Fore, Back, Style
 from timeit import default_timer as timer
 import threading
 import concurrent.futures
+import os
 import json
 import yaml
+import math
 
 from binance.client import Client
 
@@ -77,33 +79,37 @@ def acct_balance(send_output=False):
     acct_balance = client.get_asset_balance(asset=config['trade_configs']
                                                 [selected_config]['pairing'])
         
-    print('\nYour {} balance is {}\n'.format(config['trade_configs'][selected_config]['pairing'],acct_balance['free']))
+    print('\nYour {} balance is {}\n'.format(config['trade_configs'][selected_config]['pairing'], acct_balance['free']))
     print(Fore.YELLOW + 'Please ensure Config is correct before proceeding\n' + Fore.RESET)
+
+    if float(acct_balance['free']) < 0.001:
+        print(Fore.RED + 'Binance requires min balance of 0.001 BTC for trade\n' + Fore.RESET)
 
     return acct_balance
     
-def coin_info_analysis(coin_pair_info, balance):
-    print(balance['free'])
-    trading_amount = float(balance['free']) * config['trade_configs'][selected_config]['buy_qty_from_wallet_percent']
-    return trading_amount
+def trading_amount():
+    avail_trading_amount = float(balance['free']) * config['trade_configs'][selected_config]['buy_qty_from_wallet']
+    return avail_trading_amount
 
 def market_order(client, selected_coin_pair, order_type, coin_pair_info, balance):
 
     if order_type == 'buy':
-        # trading_amount = coin_info_analysis(coin_pair_info, balance)
-        order = client.order_market_buy(symbol=selected_coin_pair, quantity=config['trade_configs'][selected_config]['buy_qty_from_wallet_percent'])
+        avail_trading_amount = trading_amount()
+        current_price = client.get_symbol_ticker(symbol=selected_coin_pair)
+        buy_qty = math.floor(avail_trading_amount / float(current_price['price']))
+        order = client.order_market_buy(symbol=selected_coin_pair, quantity=buy_qty)
         return order
 
     elif order_type == 'sell':
-        # sell_balance = client.get_asset_balance(asset=selected_coin.upper())
-        order = client.order_market_sell(symbol=selected_coin_pair, quantity=config['trade_configs'][selected_config]['sell_qty_from_wallet_percent'])
+        coin_balance = client.get_asset_balance(asset=selected_coin.upper())
+        # print(coin_balance)
+        # current_price = client.get_symbol_ticker(symbol=selected_coin_pair)
+        # print(current_price)
+        # sell_qty = math.floor(coin_balance * float(current_price['price']))
+        sell_qty = math.floor(float(coin_balance['free']) * config['trade_configs'][selected_config]['sell_qty_from_wallet'])
+        order = client.order_market_sell(symbol=selected_coin_pair, quantity=sell_qty)
         return order
 
-    elif order_type == 'test':
-        # trading_amount = coin_info_analysis(coin_pair_info, balance)
-        order = client.create_test_order(symbol=selected_coin_pair, side=SIDE_BUY,
-                                    type=ORDER_TYPE_MARKET, quantity=100)
-        return order
 
 def display_order_details(order):
     return json.dumps(order, sort_keys=True, indent=4)
@@ -119,13 +125,14 @@ def check_margin():
             sell_order = market_order(client, selected_coin_pair, 'sell', coin_pair_info, balance)
             return sell_order
 
-
     while True:
-        buy_price = buy_order['price']
-        avg_price = client.get_avg_price(symbol=selected_coin_pair)
+        # avg_price = client.get_avg_price(symbol=selected_coin_pair)
+        current_price = client.get_symbol_ticker(symbol=selected_coin_pair)
         margin = config['trade_configs'][selected_config]['profit_margin']
         
-        if avg_price >= (buy_price * margin):
+        # print(current_price)
+
+        if float(current_price['price']) >= (buy_order['price'] * margin):
             sell_order = market_order(client, selected_coin_pair, 'sell', coin_pair_info, balance)
             break
         else:
@@ -156,11 +163,16 @@ if __name__ == '__main__':
 
     # answer3 = Inquirer.prompt(question3)
     # info_for_all_exchange = client.get_exchange_info()
-    
+
     coin_pair_info = client.get_symbol_info(selected_coin_pair)
     # coin_info_analysis(coin_pair_info=coin_pair_info, balance=balance)
     #Time t get info is under 0.3secs. Factor this into trades
-    
+
+    #Example of this in excerpt
+    # print(coin_pair_info)
+
+    #TODO: Uncomment below after testing
+
     buy_order = market_order(client, selected_coin_pair, 'buy', coin_pair_info, balance)
     # buy_order = market_order(client, selected_coin_pair, 'test', coin_pair_info, balance)
 
@@ -170,14 +182,7 @@ if __name__ == '__main__':
         buy_order_details = executor.submit(display_order_details, buy_order)
         print('\n' + buy_order_details.result() + '\n')
 
-        #TODO: Continuous check for profit margin target
-        #While loop and threading for time check fallback
-
         sell_order = check_margin()
 
     sell_order_details = display_order_details(sell_order)
     print('\n' + sell_order_details + '\n')
-            
-
-
-    
