@@ -1,0 +1,4 @@
+PyYAML
+colorama
+pyfiglet
+PyInquirer
