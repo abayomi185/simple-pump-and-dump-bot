@@ -16,8 +16,8 @@ trade_configs:
     order_type: market
     #Amount from wallet to use for trade buy, integer only
     buy_qty_from_wallet_percent: 100
-    #Profit margin multiplier; 1 equals 100% gain
-    profit_margin: 1
+    #Profit margin multiplier; 2 equals 100% gain
+    profit_margin: 2
     #Amount from wallet to use for trade sell, integer only
     sell_qty_from_wallet_percent: 100
     #Timeout in milliseconds if profit margin doesn't reach intended value

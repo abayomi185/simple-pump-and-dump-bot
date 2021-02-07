@@ -1,5 +1,5 @@
 from __future__ import print_function, unicode_literals
-from time import time
+from time import sleep, time
 import PyInquirer as Inquirer
 from pprint import pprint
 from pyfiglet import Figlet
@@ -7,7 +7,6 @@ from colorama import Fore, Back, Style
 from timeit import default_timer as timer
 import threading
 import concurrent.futures
-import time
 import json
 import yaml
 
@@ -100,8 +99,37 @@ def market_order(client, selected_coin_pair, order_type, coin_pair_info, balance
         order = client.order_market_sell(symbol=selected_coin_pair, quantity=config['trade_configs'][selected_config]['sell_qty_from_wallet_percent'])
         return order
 
+    elif order_type == 'test':
+        # trading_amount = coin_info_analysis(coin_pair_info, balance)
+        order = client.create_test_order(symbol=selected_coin_pair, side=SIDE_BUY,
+                                    type=ORDER_TYPE_MARKET, quantity=100)
+        return order
+
 def display_order_details(order):
     return json.dumps(order, sort_keys=True, indent=4)
+
+def check_margin():
+
+    sell_order = None
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        sleep((config['trade_configs'][selected_config]['sell_fallback_timeout_ms']/1000))
+        
+        if sell_order == None:
+            sell_order = market_order(client, selected_coin_pair, 'sell', coin_pair_info, balance)
+            return sell_order
+
+
+    while True:
+        buy_price = buy_order['price']
+        avg_price = client.get_avg_price(symbol=selected_coin_pair)
+        margin = config['trade_configs'][selected_config]['profit_margin']
+        
+        if avg_price >= (buy_price * margin):
+            sell_order = market_order(client, selected_coin_pair, 'sell', coin_pair_info, balance)
+            break
+        else:
+            sleep(0.1)
 
 if __name__ == '__main__':
 
@@ -134,15 +162,22 @@ if __name__ == '__main__':
     #Time t get info is under 0.3secs. Factor this into trades
     
     buy_order = market_order(client, selected_coin_pair, 'buy', coin_pair_info, balance)
+    # buy_order = market_order(client, selected_coin_pair, 'test', coin_pair_info, balance)
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         
         #Print buy order details
-        order_details = executor.submit(display_order_details, buy_order)
-        pprint('\n' + order_details.result() + '\n')
+        buy_order_details = executor.submit(display_order_details, buy_order)
+        print('\n' + buy_order_details.result() + '\n')
 
         #TODO: Continuous check for profit margin target
         #While loop and threading for time check fallback
+
+        sell_order = check_margin()
+
+    sell_order_details = display_order_details(sell_order)
+    print('\n' + sell_order_details + '\n')
+            
 
 
     
