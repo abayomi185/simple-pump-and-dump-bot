@@ -109,7 +109,6 @@ def market_order(client, selected_coin_pair, order_type, coin_pair_info, balance
         order = client.order_market_sell(symbol=selected_coin_pair, quantity=sell_qty)
         return order
 
-
 def display_order_details(order):
     return json.dumps(order, sort_keys=True, indent=4)
 
@@ -131,11 +130,24 @@ def check_margin():
         
         # print(current_price)
 
-        if float(current_price['price']) >= (buy_order['price'] * margin):
+        if float(current_price['price']) >= (config['fills'][0]['price'] * margin):
             sell_order = market_order(client, selected_coin_pair, 'sell', coin_pair_info, balance)
             break
         else:
-            sleep(0.1)
+            sleep((config['trade_configs'][selected_config]['refresh_interval']/1000))
+
+
+def insert_into_db(order):
+    
+    c.execute("INSERT INTO Orders VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+            (order['clientOrderId'], order['orderId'], order['fills'][0]['tradeId'], 
+                order['symbol'], order['type'], order['side'], order['timeInForce'],
+                order['transactTime'], order['fills'][0]['commissionAsset'], 
+                order['fills'][0]['price'], order['fills'][0]['commission'],
+                order['fills'][0]['qty'], order['cummulativeQuoteQty']))
+    
+    conn.commit()
+
 
 if __name__ == '__main__':
 
@@ -160,21 +172,10 @@ if __name__ == '__main__':
     selected_coin_pair = selected_coin.upper() + \
                             config['trade_configs'][selected_config]['pairing']
 
-    # answer3 = Inquirer.prompt(question3)
-    # info_for_all_exchange = client.get_exchange_info()
-
     coin_pair_info = client.get_symbol_info(selected_coin_pair)
-    # coin_info_analysis(coin_pair_info=coin_pair_info, balance=balance)
-    #Time t get info is under 0.3secs. Factor this into trades
-
-    #Example of this in excerpt
-    # print(coin_pair_info)
-
-    #TODO: Uncomment below after testing
 
     buy_order = market_order(client, selected_coin_pair, 'buy', coin_pair_info, balance)
-    # buy_order = market_order(client, selected_coin_pair, 'test', coin_pair_info, balance)
-
+    
     with concurrent.futures.ThreadPoolExecutor() as executor:
         
         #Print buy order details
@@ -185,3 +186,8 @@ if __name__ == '__main__':
 
     sell_order_details = display_order_details(sell_order)
     print('\n' + sell_order_details + '\n')
+
+    insert_into_db(order=buy_order)
+    insert_into_db(order=sell_order)
+
+    conn.close()
