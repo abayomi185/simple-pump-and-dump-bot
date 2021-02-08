@@ -14,11 +14,10 @@ import math
 
 from binance.client import Client
 
-from binance.enums import *
+import sqlite3
 
-# import requests
-# response = requests.get('https://google.com/')
-# print(response)
+conn = sqlite3.connect('records.db')
+c = conn.cursor()
 
 conf_import = "./conf.yaml"
 secrets = "./secrets.yaml"
