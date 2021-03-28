@@ -17,8 +17,8 @@ Edit config and create a new file named secrets.yaml in the ```src``` directory
 ```
    cd src
    touch secrets.yaml
-   echo "api_key: <your_binance_api_key>" > secrets.yaml
-   echo "api_secret: <your_binance_secret_key>" > secrets.yaml
+   echo "api_key: <your_binance_api_key>" >> secrets.yaml
+   echo "api_secret: <your_binance_secret_key>" >> secrets.yaml
 ```
 Edit conf.yaml as desired; comments are writtens as a guide in the .yaml file.  
 <br/>
