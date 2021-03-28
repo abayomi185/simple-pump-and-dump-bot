@@ -1,19 +1,32 @@
-# Pump and Dump Crypto Bot (WIP)
+# Simple Binance Pump and Dump Bot
 
-Install pip packages
+> USE THIS SCRIPT AT YOUR OWN RISK. This script offers no guarantee. I assume no risk from your use of this software. No part of this script and repo constitutes financial advice.
+
+## Installation
+
+Install Python3 and pip
+
+Install pip packages:
 
 ```pip install -r requirements.txt``` 
 
-Edit config and create a new file named secrets.yaml in the directory
+Edit config and create a new file named secrets.yaml in the ```src``` directory
 
 ```
+   cd src
    touch secrets.yaml
    echo "api_key: <your_binance_api_key>" > secrets.yaml
    echo "api_secret: <your_binance_secret_key>" > secrets.yaml
 ```
-Edit conf.yaml as desired; comments are writtens as a guide in the .yaml file.
+Edit conf.yaml as desired; comments are writtens as a guide in the .yaml file.  
+<br/>
 
-Run ```python3 bot.py``` and follow prompts until the coin name input.
+Run ```python3 initialise_db.py``` to initialise the local records database.  
+<br/>
 
-Input coin name at the right time for pump and wait for earnings.
+Run ```python3 bot.py``` and follow prompts until the coin name input.  
+<br/>
 
+Input coin name at the right time for pump (pump signal) and wait for earnings!
+
+Good Luck!
