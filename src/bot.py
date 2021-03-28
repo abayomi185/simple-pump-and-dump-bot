@@ -12,24 +12,28 @@ import json
 import yaml
 import math
 
+# Binance API Helper - https://github.com/sammchardy/python-binance.git
 from binance.client import Client
 
+# SQLite3 to save local records of trades
 import sqlite3
 
+# Connect to records.db database
 conn = sqlite3.connect('records.db')
 c = conn.cursor()
 
+# Import user config and instantiate variables
 conf_import = "./conf.yaml"
-secrets = "./secrets.yaml"
+secrets = "./.secrets.yaml"
 coin = None
 config = None
 
-#Switched to .yaml it offers commenting and other features
+# Switched to .yaml as it offers commenting and other features
 #It shouldn't be an issue for speed as dict is loaded into memory
 with open(conf_import, "r") as conf_file:
     config = yaml.safe_load(conf_file)
 
-#Open secret.json, retrieve keys and place in retrieved config dict
+# Open secret.json, retrieve keys and place in config dictionary
 with open(secrets, "r") as secrets_file:
     api_keys = yaml.safe_load(secrets_file)
 
@@ -38,6 +42,7 @@ config['api_secret'] = api_keys['api_secret']
 
 #print(config)
 
+# Command Line interface prompts for PyInquirer
 question1 = [
     {
         'type': 'list',
@@ -62,10 +67,12 @@ question3 = [
     }
 ]
 
+# Show crypto-bot banner
 def show_header():
     fig = Figlet(font='slant')
     print(fig.renderText('crypto-bot'))
 
+# Binance API Helper Debug mode
 def debug_mode(client):
     # client.ping()
     time_res = client.get_server_time()
@@ -74,6 +81,7 @@ def debug_mode(client):
     status = client.get_system_status()
     print("System Status: {}".format(status["msg"]))
 
+# Get account balance for "pairing" in config before trade
 def acct_balance(send_output=False):
     acct_balance = client.get_asset_balance(asset=config['trade_configs']
                                                 [selected_config]['pairing'])
@@ -85,11 +93,33 @@ def acct_balance(send_output=False):
         print(Fore.RED + 'Binance requires min balance of 0.001 BTC for trade\n' + Fore.RESET)
 
     return acct_balance
-    
+
+# Get account balance for "pairing" in config after trade
+def acct_balance2(send_output=False):
+    acct_balance = client.get_asset_balance(asset=config['trade_configs']
+                                                [selected_config]['pairing'])
+        
+    print('\nYour {} balance after trading is {}\n'.format(config['trade_configs'][selected_config]['pairing'], acct_balance['free']))
+
+    difference = acct_balance['free'] - balance['free']
+    percentage = (difference/balance) * 100
+
+    if float(acct_balance['free']) < balance:
+        
+        print(Fore.YELLOW + 'A {}% loss\n'.format(percentage) + Fore.RESET)
+
+    if float(acct_balance['free']) > balance:
+        
+        print(Fore.GREEN + 'A {}% gain\n'.format(percentage) + Fore.RESET)
+
+    return acct_balance
+
+# Get available trading amount with user config
 def trading_amount():
     avail_trading_amount = float(balance['free']) * config['trade_configs'][selected_config]['buy_qty_from_wallet']
     return avail_trading_amount
 
+# Execute market order - buy and/or sell
 def market_order(client, selected_coin_pair, order_type, coin_pair_info, balance):
 
     if order_type == 'buy':
@@ -109,19 +139,21 @@ def market_order(client, selected_coin_pair, order_type, coin_pair_info, balance
         order = client.order_market_sell(symbol=selected_coin_pair, quantity=sell_qty)
         return order
 
+# Displays order details asynchronously - see 'main' block
 def display_order_details(order):
     return json.dumps(order, sort_keys=True, indent=4)
 
+# Check user configs margin in to sell order
 def check_margin():
 
-    sell_order = None
+    pending_sell_order = None
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         sleep((config['trade_configs'][selected_config]['sell_fallback_timeout_ms']/1000))
         
-        if sell_order == None:
-            sell_order = market_order(client, selected_coin_pair, 'sell', coin_pair_info, balance)
-            return sell_order
+        if pending_sell_order == None:
+            pending_sell_order = market_order(client, selected_coin_pair, 'sell', coin_pair_info, balance)
+            return pending_sell_order
 
     while True:
         # avg_price = client.get_avg_price(symbol=selected_coin_pair)
@@ -130,13 +162,15 @@ def check_margin():
         
         # print(current_price)
 
-        if float(current_price['price']) >= (config['fills'][0]['price'] * margin):
-            sell_order = market_order(client, selected_coin_pair, 'sell', coin_pair_info, balance)
+        if float(current_price['price']) >= (buy_order['fills'][0]['price'] * margin):
+            pending_sell_order = market_order(client, selected_coin_pair, 'sell', coin_pair_info, balance)
             break
         else:
             sleep((config['trade_configs'][selected_config]['refresh_interval']/1000))
 
+    return pending_sell_order
 
+# Save orders to local db asynchronously
 def insert_into_db(order):
     
     c.execute("INSERT INTO Orders VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
@@ -176,6 +210,7 @@ if __name__ == '__main__':
 
     buy_order = market_order(client, selected_coin_pair, 'buy', coin_pair_info, balance)
     
+    # Execution using threading
     with concurrent.futures.ThreadPoolExecutor() as executor:
         
         #Print buy order details
@@ -191,3 +226,5 @@ if __name__ == '__main__':
     insert_into_db(order=sell_order)
 
     conn.close()
+
+    balance2 = acct_balance()
