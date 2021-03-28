@@ -2,4 +2,4 @@
 .vscode
 .secrets.yaml
 secrets.yaml
-records.db
+*.db

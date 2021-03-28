@@ -1,4 +1,4 @@
-{
+[{
     "clientOrderId": "xxxxxxxxxxxxxxxxxxxxxx",
     "cummulativeQuoteQty": "0.00079856",
     "executedQty": "434.00000000",
@@ -8,10 +8,10 @@
             "commissionAsset": "DOGE",
             "price": "0.00000184",
             "qty": "434.00000000",
-            "tradeId": 0000000
+            "tradeId": 1000000
         }
     ],
-    "orderId": 00000000,
+    "orderId": 10000000,
     "orderListId": -1,
     "origQty": "434.00000000",
     "price": "0.00000000",
@@ -21,9 +21,7 @@
     "timeInForce": "GTC",
     "transactTime": 1612727472324,
     "type": "MARKET"
-}
-
-
+},
 {
     "clientOrderId": "xxxxxxxxxxxxxxxxxxxxxx",
     "cummulativeQuoteQty": "0.00079422",
@@ -34,10 +32,10 @@
             "commissionAsset": "BTC",
             "price": "0.00000183",
             "qty": "434.00000000",
-            "tradeId": 0000000
+            "tradeId": 1000000
         }
     ],
-    "orderId": 00000000,
+    "orderId": 10000000,
     "orderListId": -1,
     "origQty": "434.00000000",
     "price": "0.00000000",
@@ -47,4 +45,4 @@
     "timeInForce": "GTC",
     "transactTime": 1612727475801,
     "type": "MARKET"
-}
+}]
