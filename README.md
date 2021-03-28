@@ -2,6 +2,8 @@
 
 > USE THIS SCRIPT AT YOUR OWN RISK. This script offers no guarantee. I assume no risk from your use of this software. No part of this script and repo constitutes financial advice.
 
+Simple to use, configurable Pump and Dump Bot for [Binance](https://binance.com) Cryptocurrency Exchange
+
 ## Installation
 
 Install Python3 and pip
