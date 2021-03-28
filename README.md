@@ -31,6 +31,6 @@ Run ```python3 initialise_db.py``` to initialise the local records database.
 Run ```python3 bot.py``` and follow prompts until the coin name input.  
 <br/>
 
-Input coin name at the right time for pump (pump signal) and wait for earnings!
+Input the coin name at the right time for pump (pump signal) and wait for earnings!
 
 Good Luck!
