@@ -1,2 +1,4 @@
 .venv
 .vscode
+secrets.yaml
+records.db
