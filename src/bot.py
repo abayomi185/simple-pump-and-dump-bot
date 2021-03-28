@@ -24,7 +24,7 @@ c = conn.cursor()
 
 # Import user config and instantiate variables
 conf_import = "./conf.yaml"
-secrets = "./.secrets.yaml"
+secrets = "./secrets.yaml"
 coin = None
 config = None
 
