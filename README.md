@@ -1,6 +1,6 @@
 # Simple Binance Pump and Dump Bot
 
-> USE THIS SCRIPT AT YOUR OWN RISK. This script offers no guarantee. I assume no risk from your use of this software. No part of this script and repo constitutes financial advice.
+> USE THIS BOT AT YOUR OWN RISK. This script offers no guarantee. I assume no risk from your use of this software. No part of this repo constitutes financial advice.
 
 Simple to use, configurable Pump and Dump Bot for [Binance](https://binance.com) Cryptocurrency Exchange
 
