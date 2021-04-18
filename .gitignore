@@ -1,6 +1,6 @@
 .venv
 .vscode
 .secrets.yaml
-secrets.yaml
+*secrets.yaml
 *.db
 .DS_Store
