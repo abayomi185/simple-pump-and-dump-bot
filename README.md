@@ -1,4 +1,5 @@
-# Simple Binance Pump and Dump Bot
+# Pump and Dump Bot
+## For Binance and Kucoin
 
 > USE THIS BOT AT YOUR OWN RISK. This script offers no guarantee. I assume no risk from your use of this software. No part of this repo constitutes financial advice.
 
