@@ -5,9 +5,10 @@ c = conn.cursor()
 
 c.execute("""CREATE TABLE Orders
             (
+                platform TEXT,
                 client_order_id TEXT,
                 order_id TEXT,
-                trade_id REAL,
+                trade_id TEXT,
                 symbol TEXT,
                 order_type TEXT,
                 order_side TEXT,

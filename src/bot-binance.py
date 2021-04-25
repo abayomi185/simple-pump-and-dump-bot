@@ -23,8 +23,8 @@ conn = sqlite3.connect('records.db')
 c = conn.cursor()
 
 # Import user config and instantiate variables
-conf_import = "./conf.yaml"
-secrets = "./secrets.yaml"
+conf_import = "./conf-binance.yaml"
+secrets = "./secrets-binance.yaml"
 coin = None
 config = None
 
@@ -89,8 +89,11 @@ def acct_balance(send_output=False):
     print('\nYour {} balance is {}\n'.format(config['trade_configs'][selected_config]['pairing'], acct_balance['free']))
     print(Fore.YELLOW + 'Please ensure Config is correct before proceeding\n' + Fore.RESET)
 
-    if float(acct_balance['free']) < 0.001:
-        print(Fore.RED + 'Binance requires min balance of 0.001 BTC for trade\n' + Fore.RESET)
+    if config['trade_configs'][selected_config]['pairing'] == 'BTC':
+        if float(acct_balance['free']) < 0.001:
+            print(Fore.RED + 'Binance requires min balance of 0.001 BTC for trade\n' + Fore.RESET)
+    else:
+        print(Fore.RED + 'A min balance is often required for trade on Binance\n' + Fore.RESET)
 
     return acct_balance
 
@@ -106,11 +109,11 @@ def acct_balance2(send_output=False):
 
     if float(acct_balance['free']) < balance:
         
-        print(Fore.YELLOW + 'A {}% loss\n'.format(percentage) + Fore.RESET)
+        print(Fore.YELLOW + 'A {:.2f}% loss\n'.format(percentage) + Fore.RESET)
 
     if float(acct_balance['free']) > balance:
         
-        print(Fore.GREEN + 'A {}% gain\n'.format(percentage) + Fore.RESET)
+        print(Fore.GREEN + 'A {:.2f}% gain\n'.format(percentage) + Fore.RESET)
 
     return acct_balance
 
@@ -173,8 +176,8 @@ def check_margin():
 # Save orders to local db asynchronously
 def insert_into_db(order):
     
-    c.execute("INSERT INTO Orders VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-            (order['clientOrderId'], order['orderId'], order['fills'][0]['tradeId'], 
+    c.execute("INSERT INTO Orders VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+            ("Binance", order['clientOrderId'], order['orderId'], order['fills'][0]['tradeId'], 
                 order['symbol'], order['type'], order['side'], order['timeInForce'],
                 order['transactTime'], order['fills'][0]['commissionAsset'], 
                 order['fills'][0]['price'], order['fills'][0]['commission'],
@@ -186,10 +189,12 @@ def insert_into_db(order):
 if __name__ == '__main__':
 
     show_header()
-    client = Client(config["api_key"], config["api_secret"])    
+    client = Client(config["api_key"], config["api_secret"])
     if config['debug_mode']:
         debug_mode(client=client)
         print('\n')
+
+    print(Fore.YELLOW + '-- Binance Edition --\n' + Fore.RESET)
 
     #Question1
     answer1 = Inquirer.prompt(question1)

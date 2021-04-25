@@ -1,0 +1,36 @@
+#This is the config file for Crypto-bot
+
+api_key: 
+api_secret: 
+api_passphrase: 
+
+debug_mode: false
+
+trade_configs:
+
+  #Put comments here
+
+  market-trade-one:
+    #Coin pairing for trade
+    pairing: USDT
+    #Currently, only market is available, keep unchanged
+    order_type: market
+    #Amount from wallet to use for trade buy; range 0 to 1
+    buy_qty_from_wallet: 0.75
+    #Profit margin multiplier; 2 equals 100% gain
+    profit_margin: 1.1
+    #Amount from wallet to use for trade sell; range 0 to 1
+    sell_qty_from_wallet: 1
+    #Refresh interval in milliseconds to check market for current price
+    refresh_interval: 20
+    #Timeout in milliseconds if profit margin doesn't reach intended value
+    sell_fallback_timeout_ms: 10000
+
+  market-trade-two:
+    pairing: BTC
+    order_type: market
+    buy_qty_from_wallet: 0.75
+    profit_margin: 2
+    sell_qty_from_wallet: 1
+    refresh_interval: 100
+    sell_fallback_timeout_ms: 5000
