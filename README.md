@@ -35,7 +35,7 @@ Edit conf.yaml as desired; comments are writtens as a guide in the .yaml file.
 Run ```python3 initialise_db.py``` to initialise the local records database.  
 <br/>
 
-Run ```python3 bot.py``` and follow prompts until the coin name input.  
+Run ```python3 bot-binance.py``` or ```python3 bot-kucoin.py``` and follow the prompts until the coin name input.  
 <br/>
 
 Input the coin name at the right time for pump (pump signal) and wait for earnings!
