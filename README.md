@@ -21,7 +21,7 @@ Edit config and create a new file named secrets-binance.yaml or secrets-kucoin.y
    echo "api_key: <your_binance_api_key>" >> secrets-binance.yaml
    echo "api_secret: <your_binance_secret_key>" >> secrets-binance.yaml
 ```
-For Kucoin, replace ```secrets-binance``` with ```secreets-kucoin``` and add the following:
+For Kucoin, replace ```secrets-binance``` with ```secrets-kucoin``` and add the following:
 ```
    echo "api_passphrase: <your_kucoin_api_passphrase>" >> secrets-kucoin.yaml
 ```
