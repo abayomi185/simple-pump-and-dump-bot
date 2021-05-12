@@ -9,6 +9,12 @@ Simple to use, configurable Pump and Dump Bot for [Binance](https://binance.com)
 
 Install Python3 and pip
 
+Clone repo:
+```
+git clone https://github.com/abayomi185/simple-pump-and-dump-bot.git
+cd simple-pump-and-dump-bot
+```
+
 Install pip packages:
 
 ```pip install -r requirements.txt``` 
