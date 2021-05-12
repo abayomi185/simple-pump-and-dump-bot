@@ -2,7 +2,6 @@ from __future__ import print_function, unicode_literals
 from time import sleep, time
 import PyInquirer as Inquirer
 from pprint import pprint
-from prompt_toolkit.filters import cli
 from pyfiglet import Figlet
 from colorama import Fore, Back, Style
 from timeit import default_timer as timer
@@ -131,8 +130,8 @@ def acct_balance2():
 
 def pump_duration(start_time, end_time):
     time_delta = end_time - start_time
-    time_delta = round(time_delta, 3)
-    print(f"Time elapsed for pump is {time_delta}\n")
+    time_delta = round(time_delta, 2)
+    print(f"Time elapsed for pump is {time_delta}s\n")
 
 # Get available trading amount with user config
 def trading_amount():
@@ -166,38 +165,43 @@ def display_order_details(order):
     return json.dumps(order, sort_keys=True, indent=4)
 
 # Check user configs margin in to sell order
-def check_margin():
+async def check_margin():
 
-    pending_sell_order_id = None
+    global pending_sell_order_id
+    # pending_sell_order_id = None
     margin = config['trade_configs'][selected_config]['profit_margin']
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        future = executor.submit(fallback_action, pending_sell_order_id)
-        executor.shutdown(wait=False)
-        # pending_sell_order_id = future.result()
-        # return pending_sell_order_id
+    fallback_task = asyncio.create_task(fallback_action())
+    # count = 0
 
     while True:
         # avg_price = client.get_avg_price(symbol=selected_coin_pair)
         current_price = client.get_ticker(symbol=selected_coin_pair)
-        # print("current price")# print(current_price)
-        # print("buy price")# print(buy_order_data['price'])
-        print(float(buy_order_data['dealFunds'])/float(buy_order_data['dealSize']))
-
-        if float(current_price['price']) >= ((float(buy_order_data['dealFunds'])/float(buy_order_data['dealSize'])) * (1 + margin)):
-            pending_sell_order_id = market_order(selected_coin_pair, 'sell')
-            break
+        # print(float(buy_order_data['dealFunds'])/float(buy_order_data['dealSize']))
+        # count+=1
+        
+        if float(current_price['price']) >= ((float(buy_order_data['dealFunds'])/float(buy_order_data['dealSize'])) * (1.0 + margin)):
+            if pending_sell_order_id == None:
+                pending_sell_order_id = market_order(selected_coin_pair, 'sell')
+                break
         else:
-            sleep((config['trade_configs'][selected_config]['refresh_interval']/1000))
+            # sleep((config['trade_configs'][selected_config]['refresh_interval']/1000))
+            await asyncio.sleep(config['trade_configs'][selected_config]['refresh_interval']/1000)
+        
+        if pending_sell_order_id:
+            break
 
+    # print(count)
     return pending_sell_order_id
 
-def fallback_action(pending_sell_order_id):
-    sleep((config['trade_configs'][selected_config]['sell_fallback_timeout_ms']/1000))
+async def fallback_action():
+    
+    global pending_sell_order_id
+    # sleep((config['trade_configs'][selected_config]['sell_fallback_timeout_ms']/1000))
+    await asyncio.sleep((config['trade_configs'][selected_config]['sell_fallback_timeout_ms']/1000))
         
     if pending_sell_order_id == None:
         pending_sell_order_id = market_order(selected_coin_pair, 'sell')
-        return pending_sell_order_id
 
 # Save orders to local db asynchronously
 def insert_into_db(order, order_id):
@@ -217,6 +221,42 @@ def insert_into_db(order, order_id):
                 order['size'], order['dealFunds']))
     
     conn.commit()
+
+async def main():
+
+    global buy_order_data
+
+    # coin_pair_info = client.get_symbol_info(selected_coin_pair)
+    coin_pair_info = client.get_ticker(selected_coin_pair)
+    
+    start_time = time.time()
+
+    buy_order = market_order(selected_coin_pair, 'buy')
+    # print(f"buy_order: {buy_order}")
+    buy_order_data = trade.get_order_details(buy_order['orderId'])
+    
+    # Execution using threading
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        
+        #Print buy order details
+        buy_order_details = executor.submit(display_order_details, buy_order_data)
+        print('\n' + buy_order_details.result() + '\n')
+
+        sell_order = await check_margin()
+
+    end_time = time.time()
+    sell_order_data = trade.get_order_details(sell_order['orderId'])
+    sell_order_details = display_order_details(sell_order_data)
+    print('\n' + sell_order_details + '\n')
+
+    # insert_into_db(order=buy_order_data, order_id=buy_order['orderId'])
+    # insert_into_db(order=sell_order_data, order_id=sell_order['orderId'])
+
+    conn.close()
+
+    balance2 = acct_balance2()
+    pump_duration(start_time, end_time)
+
 
 if __name__ == '__main__':
 
@@ -251,33 +291,7 @@ if __name__ == '__main__':
     selected_coin_pair = selected_coin.upper() + "-" +\
                             config['trade_configs'][selected_config]['pairing']
 
-    start_time = time.time()
+    buy_order_data = None
+    pending_sell_order_id = None
 
-    # coin_pair_info = client.get_symbol_info(selected_coin_pair)
-    coin_pair_info = client.get_ticker(selected_coin_pair)
-
-    buy_order = market_order(selected_coin_pair, 'buy')
-    # print(f"buy_order: {buy_order}")
-    buy_order_data = trade.get_order_details(buy_order['orderId'])
-    
-    # Execution using threading
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        
-        #Print buy order details
-        buy_order_details = executor.submit(display_order_details, buy_order_data)
-        print('\n' + buy_order_details.result() + '\n')
-
-        sell_order = check_margin()
-
-    end_time = time.time()
-    sell_order_data = trade.get_order_details(sell_order['orderId'])
-    sell_order_details = display_order_details(sell_order_data)
-    print('\n' + sell_order_details + '\n')
-
-    # insert_into_db(order=buy_order_data, order_id=buy_order['orderId'])
-    # insert_into_db(order=sell_order_data, order_id=sell_order['orderId'])
-
-    conn.close()
-
-    balance2 = acct_balance2()
-    pump_duration(start_time, end_time)
+    asyncio.run(main())

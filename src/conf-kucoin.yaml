@@ -24,7 +24,7 @@ trade_configs:
     #Refresh interval in milliseconds to check market for current price
     refresh_interval: 100
     #Timeout in milliseconds if profit margin doesn't reach intended value; 25 seconds
-    sell_fallback_timeout_ms: 5000
+    sell_fallback_timeout_ms: 25000
 
   market-trade-two:
     pairing: BTC

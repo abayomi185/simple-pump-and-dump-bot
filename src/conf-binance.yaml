@@ -21,8 +21,8 @@ trade_configs:
     #Amount from wallet to use for trade sell; range 0 to 1
     sell_qty_from_wallet: 1
     #Refresh interval in milliseconds to check market for current price
-    refresh_interval: 20
-    #Timeout in milliseconds if profit margin doesn't reach intended value
+    refresh_interval: 100
+    #Timeout in milliseconds if profit margin doesn't reach intended value; 25 seconds
     sell_fallback_timeout_ms: 25000
 
   market-trade-two:
