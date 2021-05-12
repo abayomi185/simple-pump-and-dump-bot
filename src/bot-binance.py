@@ -7,6 +7,7 @@ from colorama import Fore, Back, Style
 from timeit import default_timer as timer
 import threading
 import concurrent.futures
+import asyncio
 import os
 import json
 import yaml
@@ -117,6 +118,11 @@ def acct_balance2(send_output=False):
 
     return acct_balance
 
+def pump_duration(start_time, end_time):
+    time_delta = end_time - start_time
+    time_delta = round(time_delta, 3)
+    print(f"Time elapsed for pump is {time_delta}\n")
+
 # Get available trading amount with user config
 def trading_amount():
     avail_trading_amount = float(balance['free']) * config['trade_configs'][selected_config]['buy_qty_from_wallet']
@@ -133,6 +139,7 @@ def market_order(client, selected_coin_pair, order_type, coin_pair_info, balance
         return order
 
     elif order_type == 'sell':
+        #This here is a bottle neck and can introduce delays
         coin_balance = client.get_asset_balance(asset=selected_coin.upper())
         # print(coin_balance)
         # current_price = client.get_symbol_ticker(symbol=selected_coin_pair)
@@ -150,6 +157,7 @@ def display_order_details(order):
 def check_margin():
 
     pending_sell_order = None
+    margin = config['trade_configs'][selected_config]['profit_margin']
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         sleep((config['trade_configs'][selected_config]['sell_fallback_timeout_ms']/1000))
@@ -161,11 +169,9 @@ def check_margin():
     while True:
         # avg_price = client.get_avg_price(symbol=selected_coin_pair)
         current_price = client.get_symbol_ticker(symbol=selected_coin_pair)
-        margin = config['trade_configs'][selected_config]['profit_margin']
-        
         # print(current_price)
 
-        if float(current_price['price']) >= (buy_order['fills'][0]['price'] * margin):
+        if float(current_price['price']) >= (buy_order['fills'][0]['price'] * (1 + margin)):
             pending_sell_order = market_order(client, selected_coin_pair, 'sell', coin_pair_info, balance)
             break
         else:
@@ -179,7 +185,7 @@ def insert_into_db(order):
     c.execute("INSERT INTO Orders VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
             ("Binance", order['clientOrderId'], order['orderId'], order['fills'][0]['tradeId'], 
                 order['symbol'], order['type'], order['side'], order['timeInForce'],
-                order['transactTime'], order['fills'][0]['commissionAsset'], 
+                order['transactTime'], order['fills'][0]['commissionAsset'],
                 order['fills'][0]['price'], order['fills'][0]['commission'],
                 order['fills'][0]['qty'], order['cummulativeQuoteQty']))
     
@@ -211,6 +217,8 @@ if __name__ == '__main__':
     selected_coin_pair = selected_coin.upper() + \
                             config['trade_configs'][selected_config]['pairing']
 
+    start_time = time.time()
+
     coin_pair_info = client.get_symbol_info(selected_coin_pair)
 
     buy_order = market_order(client, selected_coin_pair, 'buy', coin_pair_info, balance)
@@ -224,6 +232,7 @@ if __name__ == '__main__':
 
         sell_order = check_margin()
 
+    end_time = time.time()
     sell_order_details = display_order_details(sell_order)
     print('\n' + sell_order_details + '\n')
 
@@ -232,4 +241,5 @@ if __name__ == '__main__':
 
     conn.close()
 
-    balance2 = acct_balance()
+    balance2 = acct_balance2()
+    pump_duration(start_time, end_time)

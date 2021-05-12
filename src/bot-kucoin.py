@@ -8,11 +8,13 @@ from colorama import Fore, Back, Style
 from timeit import default_timer as timer
 import threading
 import concurrent.futures
+import asyncio
 import os
 import json
 import yaml
 import math
 import uuid
+import time
 
 # Kucoin API Helper - https://github.com/Kucoin/kucoin-python-sdk.git
 from kucoin.client import Market
@@ -127,6 +129,11 @@ def acct_balance2():
 
     return acct_balance
 
+def pump_duration(start_time, end_time):
+    time_delta = end_time - start_time
+    time_delta = round(time_delta, 3)
+    print(f"Time elapsed for pump is {time_delta}\n")
+
 # Get available trading amount with user config
 def trading_amount():
     avail_trading_amount = float(balance[0]['available']) * config['trade_configs'][selected_config]['buy_qty_from_wallet']
@@ -162,28 +169,35 @@ def display_order_details(order):
 def check_margin():
 
     pending_sell_order_id = None
+    margin = config['trade_configs'][selected_config]['profit_margin']
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        sleep((config['trade_configs'][selected_config]['sell_fallback_timeout_ms']/1000))
-        
-        if pending_sell_order_id == None:
-            pending_sell_order_id = market_order(selected_coin_pair, 'sell')
-            return pending_sell_order_id
+        future = executor.submit(fallback_action, pending_sell_order_id)
+        executor.shutdown(wait=False)
+        # pending_sell_order_id = future.result()
+        # return pending_sell_order_id
 
     while True:
         # avg_price = client.get_avg_price(symbol=selected_coin_pair)
         current_price = client.get_ticker(symbol=selected_coin_pair)
-        margin = config['trade_configs'][selected_config]['profit_margin']
-        
-        # print(current_price)
+        # print("current price")# print(current_price)
+        # print("buy price")# print(buy_order_data['price'])
+        print(float(buy_order_data['dealFunds'])/float(buy_order_data['dealSize']))
 
-        if float(current_price['price']) >= (buy_order_data['price'] * margin):
+        if float(current_price['price']) >= ((float(buy_order_data['dealFunds'])/float(buy_order_data['dealSize'])) * (1 + margin)):
             pending_sell_order_id = market_order(selected_coin_pair, 'sell')
             break
         else:
             sleep((config['trade_configs'][selected_config]['refresh_interval']/1000))
 
     return pending_sell_order_id
+
+def fallback_action(pending_sell_order_id):
+    sleep((config['trade_configs'][selected_config]['sell_fallback_timeout_ms']/1000))
+        
+    if pending_sell_order_id == None:
+        pending_sell_order_id = market_order(selected_coin_pair, 'sell')
+        return pending_sell_order_id
 
 # Save orders to local db asynchronously
 def insert_into_db(order, order_id):
@@ -237,11 +251,13 @@ if __name__ == '__main__':
     selected_coin_pair = selected_coin.upper() + "-" +\
                             config['trade_configs'][selected_config]['pairing']
 
+    start_time = time.time()
+
     # coin_pair_info = client.get_symbol_info(selected_coin_pair)
     coin_pair_info = client.get_ticker(selected_coin_pair)
 
     buy_order = market_order(selected_coin_pair, 'buy')
-    print(f"buy_order: {buy_order}")
+    # print(f"buy_order: {buy_order}")
     buy_order_data = trade.get_order_details(buy_order['orderId'])
     
     # Execution using threading
@@ -253,13 +269,15 @@ if __name__ == '__main__':
 
         sell_order = check_margin()
 
+    end_time = time.time()
     sell_order_data = trade.get_order_details(sell_order['orderId'])
     sell_order_details = display_order_details(sell_order_data)
     print('\n' + sell_order_details + '\n')
 
-    insert_into_db(order=buy_order_data, order_id=buy_order['orderId'])
-    insert_into_db(order=sell_order_data, order_id=sell_order['orderId'])
+    # insert_into_db(order=buy_order_data, order_id=buy_order['orderId'])
+    # insert_into_db(order=sell_order_data, order_id=sell_order['orderId'])
 
     conn.close()
 
     balance2 = acct_balance2()
+    pump_duration(start_time, end_time)
