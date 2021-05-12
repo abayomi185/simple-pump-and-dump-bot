@@ -3,3 +3,4 @@ colorama
 pyfiglet
 PyInquirer
 python-binance
+kucoin-python
