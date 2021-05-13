@@ -54,4 +54,7 @@ Good Luck!
 - Button press to exit trade
 <br/>
 <br/>
-<a href="https://www.buymeacoffee.com/abayomi185" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Fly me to the moon" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;"></a>
+<a href="https://www.buymeacoffee.com/abayomi185" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Fly me to the moon" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;"></a><br/>
+BTC: bc1q9urpzxnq0rkcvdagf2wzm0yfj49mqpf75z7xpg<br/>
+ETH: 0x6297299b003302A1c2290ee613c2B828b3E13b24<br/>
+XMR: 44AxGyJGqaSFQGfwd6atoB4v8M1dfjw9Kfayw4hs9BKQYR9vMQe2J3tfvMumBwN7LkYcK5x186iZXDVWXD2ctT9ZHvCP3yp
