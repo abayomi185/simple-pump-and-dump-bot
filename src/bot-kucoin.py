@@ -249,8 +249,8 @@ async def main():
     sell_order_details = display_order_details(sell_order_data)
     print('\n' + sell_order_details + '\n')
 
-    # insert_into_db(order=buy_order_data, order_id=buy_order['orderId'])
-    # insert_into_db(order=sell_order_data, order_id=sell_order['orderId'])
+    insert_into_db(order=buy_order_data, order_id=buy_order['orderId'])
+    insert_into_db(order=sell_order_data, order_id=sell_order['orderId'])
 
     conn.close()
 
