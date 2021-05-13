@@ -36,7 +36,7 @@ For Kucoin, replace ```secrets-binance``` with ```secrets-kucoin``` and add the 
 > You will need to get your ```api_key``` and ```api_secret``` from your Binance or Kucoin account.
 > For Kucoin, you would also need your ```api_passphrase```
 
-Edit conf.yaml as desired; comments are writtens as a guide in the .yaml file.  
+Edit conf.yaml as desired; comments are written as a guide in the .yaml file.  
 <br/>
 
 Run ```python3 initialise_db.py``` to initialise the local records database.  
