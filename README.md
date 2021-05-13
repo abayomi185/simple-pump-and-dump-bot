@@ -19,7 +19,7 @@ Install pip packages:
 
 ```pip install -r requirements.txt``` 
 
-Edit config and create a new file named secrets-binance.yaml or secrets-kucoin.yaml in the ```src``` directory:
+Edit config and create a new file named ```secrets-binance.yaml``` or ```secrets-kucoin.yaml``` in the ```src``` directory:
 
 ```
    cd src
