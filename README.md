@@ -1,3 +1,4 @@
+> PLEASE ENSURE YOU CLONE THE NEWEST COMMIT. A VERY IMPORTANT FIX HAS BEEN MADE. SEE RELEASES FOR DETAILS.
 # Pump and Dump Bot
 ## For Binance and Kucoin
 
@@ -19,7 +20,7 @@ Install pip packages:
 
 ```pip install -r requirements.txt``` 
 
-Edit config and create a new file named secrets-binance.yaml or secrets-kucoin.yaml in the ```src``` directory:
+Edit config and create a new file named ```secrets-binance.yaml``` or ```secrets-kucoin.yaml``` in the ```src``` directory:
 
 ```
    cd src
@@ -35,7 +36,7 @@ For Kucoin, replace ```secrets-binance``` with ```secrets-kucoin``` and add the 
 > You will need to get your ```api_key``` and ```api_secret``` from your Binance or Kucoin account.
 > For Kucoin, you would also need your ```api_passphrase```
 
-Edit conf.yaml as desired; comments are writtens as a guide in the .yaml file.  
+Edit conf.yaml as desired; comments are written as a guide in the .yaml file.  
 <br/>
 
 Run ```python3 initialise_db.py``` to initialise the local records database.  
@@ -51,6 +52,14 @@ Good Luck!
 ## Upcoming Features
 - Discord Integration
 - Button press to exit trade
+- Stop-loss config option
+- OOP Refactor
+- Cython implementation
+- Merging the bots into one
+- ...it seems like I'm porting over to NodeJS
 <br/>
 <br/>
-<a href="https://www.buymeacoffee.com/abayomi185" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Fly me to the moon" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;"></a>
+<a href="https://www.buymeacoffee.com/abayomi185" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Fly me to the moon" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;"></a><br/>
+BTC: bc1q9urpzxnq0rkcvdagf2wzm0yfj49mqpf75z7xpg<br/>
+ETH: 0x6297299b003302A1c2290ee613c2B828b3E13b24<br/>
+XMR: 44AxGyJGqaSFQGfwd6atoB4v8M1dfjw9Kfayw4hs9BKQYR9vMQe2J3tfvMumBwN7LkYcK5x186iZXDVWXD2ctT9ZHvCP3yp
