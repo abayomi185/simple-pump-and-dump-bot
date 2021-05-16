@@ -17,7 +17,7 @@ cd simple-pump-and-dump-bot
 
 Install pip packages:
 
-```pip install -r requirements.txt``` 
+```pip3 install -r requirements.txt``` 
 
 Edit config and create a new file named ```secrets-binance.yaml``` or ```secrets-kucoin.yaml``` in the ```src``` directory:
 
