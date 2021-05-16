@@ -52,10 +52,13 @@ Good Luck!
 - Discord Integration
 - Button press to exit trade
 - Stop-loss config option
-- OOP Refactor
-- Cython implementation
-- Merging the bots into one
-- ...it seems like I'm porting over to NodeJS
+- UI with Electron or React
+
+## Update Log
+- 16-05-21
+  - Porting the bot to NodeJS
+  - Merging the bots into a single app
+  - Improving software structure; OOP and modules
 <br/>
 <br/>
 <a href="https://www.buymeacoffee.com/abayomi185" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Fly me to the moon" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;"></a><br/>
