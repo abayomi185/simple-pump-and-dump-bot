@@ -1,6 +1,6 @@
 // import { crypto_exchange, exchange_color } from "./bot.js";
 
-import { config } from "../bot.js";
+// import { config } from "../bot.js";
 
 const crypto_exchange = ["Binance", "Kucoin"];
 const exchange_color = {
@@ -61,7 +61,7 @@ export const selectExchange = async () => {
   return answer;
 };
 
-export const selectTradeConfig = async () => {
+export const selectTradeConfig = async (config) => {
   let answer;
   await inquirer
     .prompt([
