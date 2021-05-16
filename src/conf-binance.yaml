@@ -1,8 +1,5 @@
 #This is the config file for Crypto-bot
 
-api_key: 
-api_secret: 
-
 debug_mode: false
 
 trade_configs:

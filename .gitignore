@@ -4,3 +4,4 @@
 *secrets*.yaml
 *.db
 .DS_Store
+node_modules

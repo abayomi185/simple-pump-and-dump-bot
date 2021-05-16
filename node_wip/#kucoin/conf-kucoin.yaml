@@ -5,6 +5,7 @@ debug_mode: false
 ################# KUCOIN CONFIG ####################
 
 trade_configs:
+
   market-trade-one:
     #Coin pairing for trade
     pairing: USDT

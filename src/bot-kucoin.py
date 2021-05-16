@@ -46,8 +46,6 @@ config['api_key'] = api_keys['api_key']
 config['api_secret'] = api_keys['api_secret']
 config['api_passphrase'] = api_keys['api_passphrase']
 
-#print(config)
-
 # Command Line interface prompts for PyInquirer
 question1 = [
     {
@@ -90,8 +88,6 @@ def debug_mode(client):
 
 # Get account balance for "pairing" in config before trade
 def acct_balance():
-    # acct_balance = user_client.get_withdrawal_quota(config['trade_configs']
-    #                                             [selected_config]['pairing'])
 
     acct_balance = user_client.get_account_list(config['trade_configs'][selected_config]['pairing'], 'trade')
 
@@ -105,8 +101,6 @@ def acct_balance():
 
 # Get account balance for "pairing" in config after trade
 def acct_balance2():
-    # acct_balance = client.get_asset_balance(asset=config['trade_configs']
-    #                                             [selected_config]['pairing'])
 
     acct_balance = user_client.get_account_list(config['trade_configs'][selected_config]['pairing'], 'trade')
         
@@ -279,9 +273,6 @@ if __name__ == '__main__':
 
     #Retrieve current coin balance here
     balance = acct_balance()
-
-    # print(f"buy_qty: {str(balance)}")
-    # print(f"{user_client.get_account_list(config['trade_configs'][selected_config]['pairing'], 'trade')}")
 
     #Question2
     answer2 = Inquirer.prompt(question2)

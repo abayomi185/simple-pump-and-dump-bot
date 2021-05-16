@@ -1,0 +1,29 @@
+{
+  "name": "crypto-bot",
+  "version": "0.0.1",
+  "description": "Pump and dump bot for crypto exchanges",
+  "type": "module",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bot.js"
+  },
+  "author": "Abayomi Ikuru",
+  "license": "ISC",
+  "dependencies": {
+    "binance-api-node": "^0.10.43",
+    "boxen": "^5.0.1",
+    "chalk": "^4.1.1",
+    "figlet": "^1.5.0",
+    "inquirer": "^8.0.0",
+    "iohook": "^0.9.1",
+    "js-yaml": "^4.1.0",
+    "keypress": "^0.2.1",
+    "kucoin-node-sdk": "^1.0.3",
+    "sqlite3": "^5.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.26.0",
+    "eslint-config-prettier": "^8.3.0"
+  }
+}
