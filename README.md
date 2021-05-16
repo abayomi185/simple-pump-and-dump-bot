@@ -56,7 +56,7 @@ Good Luck!
 
 ## Update Log
 - 16-05-21
-  - Porting the bot to NodeJS
+  - Porting the bot to NodeJS (see node_wip folder)
   - Merging the bots into a single app
   - Improving software structure; OOP and modules
 <br/>
