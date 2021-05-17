@@ -5,7 +5,7 @@
 
 import {
   header,
-  selectExchange,
+  inquirerSelectExchange,
 } from "./src/prompts.js";
 
 import BinanceBot from "./src/bot-binance.js"
@@ -21,7 +21,7 @@ async function main() {
 
   header();
 
-  const selectedExchange = await selectExchange();
+  const selectedExchange = await inquirerSelectExchange();
 
   // let pumpBot = null
 

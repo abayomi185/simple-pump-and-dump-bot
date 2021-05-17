@@ -3,7 +3,7 @@ import inquirer from "inquirer"; // Nice menus
 import figlet from "figlet"; // ASCII in terminal
 import boxen from "boxen"; // Boxes in terminal
 
-import { crypto_exchange, exchange_color } from "../bot.js"
+import { crypto_exchange, exchange_color } from "../bot.js";
 
 export const header = () => {
   console.log(
@@ -19,7 +19,7 @@ export const header = () => {
   );
 };
 
-export const selectExchange = async () => {
+export const inquirerSelectExchange = async () => {
   let answer;
   await inquirer
     .prompt([
@@ -42,6 +42,56 @@ export const selectExchange = async () => {
         })
       );
       answer = answers.crypto_exchange;
+    })
+    .catch((error) => {
+      if (error.isTtyError) {
+        // Prompt couldn't be rendered in the current environment
+      } else {
+        // Something else went wrong
+      }
+    });
+  return answer;
+};
+
+export const inquirerSelectTradeConfig = async (userConfig) => {
+  let answer;
+  await inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "trade_conf",
+        message: "Please select trade configuration?",
+        choices: Object.keys(userConfig["trade_configs"]),
+      },
+    ])
+    .then((answers) => {
+      console.log("\n");
+      console.log(userConfig["trade_configs"][answers.trade_conf]);
+      console.log("\n");
+      answer = answers.trade_conf;
+    })
+    .catch((error) => {
+      if (error.isTtyError) {
+        // Prompt couldn't be rendered in the current environment
+      } else {
+        // Something else went wrong
+      }
+    });
+  return answer;
+};
+
+export const inquirerInputCoin = async () => {
+  let answer;
+  await inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "coin",
+        message: "Please enter coin for Pump?",
+      },
+    ])
+    .then((answers) => {
+      answer = answers.coin;
     })
     .catch((error) => {
       if (error.isTtyError) {
