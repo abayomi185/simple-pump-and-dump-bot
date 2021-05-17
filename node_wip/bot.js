@@ -1,41 +1,46 @@
-// imports
-
+// Crypto Bot by abayomi185; github.com/abayomi185
 // import iohook from "iohook"; // Listen for Keypress
-import chalk from "chalk"; // Coloured Text
-import keypress from "keypress"; // Listen for Keypress
+// import chalk from "chalk"; // Coloured Text
+// import keypress from "keypress"; // Listen for Keypress
 
 import {
   header,
   selectExchange,
 } from "./src/prompts.js";
 
-import BinanceBot from "./src/binance-bot.js"
-import KucoinBot from "./src/kucoin-bot.js"
+import BinanceBot from "./src/bot-binance.js"
+import KucoinBot from "./src/bot-kucoin.js"
+
+export const crypto_exchange = ["Binance", "Kucoin"];
+export const exchange_color = {
+  Binance: "yellow",
+  Kucoin: "green",
+};
 
 async function main() {
-  // askQuestions();
+
   header();
 
   const selectedExchange = await selectExchange();
 
-  let pumpBot = null
+  // let pumpBot = null
 
   switch (selectedExchange) {
     
     case 'Binance': {
-      pumpBot = new BinanceBot().run()
+      // pumpBot = new BinanceBot().run()
+      new BinanceBot().run()
       break;
     }
     case 'Kucoin': {
       // Do setup to import right config
-      pumpBot = new KucoinBot().run()
+      // pumpBot = new KucoinBot().run()
+      new KucoinBot().run()
       break;
     }
   }
 
-  // const selectedTradeConfig = await selectTradeConfig();
-  // const selectedCoin = await inputCoin();
-
 }
 
+// console.log(process.env);
 main()

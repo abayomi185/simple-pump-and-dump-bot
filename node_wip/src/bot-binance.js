@@ -1,13 +1,13 @@
-import kucoin from "kucoin-node-sdk";
+import binance from "binance-api-node";
 
 import fs from "fs";
 import yaml from "js-yaml";
 import inquirer from "inquirer"; // Nice menus
 
-const bot = 'kucoin'
-const directory = './#kucoin/'
+const bot = 'binance'
+const directory = './#binance/'
 
-export default class KucoinBot {
+export default class BinanceBot {
 
   #user_secrets
   #user_config
@@ -65,13 +65,12 @@ export default class KucoinBot {
         }
       });
     return answer;
-  };
+  }
 
   inquirer() {}
 
   async run() {
     await this.inquirerImportUserDetails()
     this.selectedConfig = this.inquirerSelectTradeConfig()
-    console.log(await this.selectedConfig);
   }
 }

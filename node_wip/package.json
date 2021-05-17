@@ -11,6 +11,7 @@
   "author": "Abayomi Ikuru",
   "license": "ISC",
   "dependencies": {
+    "babel-eslint": "^10.1.0",
     "binance-api-node": "^0.10.43",
     "boxen": "^5.0.1",
     "chalk": "^4.1.1",
