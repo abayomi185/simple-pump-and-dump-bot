@@ -167,13 +167,15 @@ async def check_margin():
         current_price = client.get_symbol_ticker(symbol=selected_coin_pair)
         # print(current_price)
         # print(current_price['price'])
-
-        if float(current_price['price']) >= (buy_order['fills'][0]['price'] * (1.0 + margin)):
-            if pending_sell_order == None:
-                pending_sell_order = market_order(client, selected_coin_pair, 'sell', coin_pair_info, balance)
-                break
-        else:
-            await asyncio.sleep((config['trade_configs'][selected_config]['refresh_interval']/1000))
+        try:
+            if float(current_price['price']) >= (buy_order['fills'][0]['price'] * (1.0 + margin)):
+                if pending_sell_order == None:
+                    pending_sell_order = market_order(client, selected_coin_pair, 'sell', coin_pair_info, balance)
+                    break
+            else:
+                await asyncio.sleep((config['trade_configs'][selected_config]['refresh_interval']/1000))
+        except:
+            pass
 
         if pending_sell_order:
             break

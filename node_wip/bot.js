@@ -1,17 +1,15 @@
 // Crypto Bot by abayomi185; github.com/abayomi185
-// import iohook from "iohook"; // Listen for Keypress
-// import chalk from "chalk"; // Coloured Text
-// import keypress from "keypress"; // Listen for Keypress
 
 import {
   header,
   inquirerSelectExchange,
 } from "./src/prompts.js";
+import { importGlobalConfig } from "./src/import.js"
 
 import BinanceBot from "./src/bot-binance.js"
 import KucoinBot from "./src/bot-kucoin.js"
 
-export const crypto_exchange = ["Binance", "Kucoin"];
+export const crypto_exchange = importGlobalConfig().Exchange
 export const exchange_color = {
   Binance: "yellow",
   Kucoin: "green",

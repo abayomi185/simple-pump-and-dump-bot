@@ -1,6 +1,12 @@
 import fs from "fs";
 import yaml from "js-yaml";
 
+export const importGlobalConfig = () => {
+  const config_import = "./conf.yaml";
+  const config = yaml.load(fs.readFileSync(config_import, "utf-8"));
+  return config;
+};
+
 export const inquirerImportUserDetails = async (bot, directory) => {
   let userConfig;
   let userSecrets;

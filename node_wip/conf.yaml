@@ -1,0 +1,10 @@
+# Cryto-bot Global config
+
+# Remove or add exchange to disble or enable in bot
+# Current exchanges available:
+#   Binance
+#   Kucoin
+
+Exchange:
+  - Binance
+  - Kucoin
