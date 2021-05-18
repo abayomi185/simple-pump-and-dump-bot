@@ -21,7 +21,8 @@
     "js-yaml": "^4.1.0",
     "keypress": "^0.2.1",
     "kucoin-node-sdk": "^1.0.3",
-    "sqlite3": "^5.0.2"
+    "sqlite3": "^5.0.2",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "eslint": "^7.26.0",
