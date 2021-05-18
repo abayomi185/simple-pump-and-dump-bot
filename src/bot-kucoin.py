@@ -223,7 +223,7 @@ async def main():
     global buy_order_data
 
     # coin_pair_info = client.get_symbol_info(selected_coin_pair)
-    coin_pair_info = client.get_ticker(selected_coin_pair)
+    # coin_pair_info = client.get_ticker(selected_coin_pair)
     
     start_time = time.time()
 
