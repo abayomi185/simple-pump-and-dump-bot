@@ -1,9 +1,10 @@
 import kucoin from "kucoin-node-sdk";
 import { v4 as uuidv4 } from "uuid";
-import chalk from "chalk"
+import chalk from "chalk";
 
 import { inquirerImportUserDetails } from "./import.js";
 import { inquirerSelectTradeConfig, inquirerInputCoin } from "./prompts.js";
+import { insertIntoDB } from "./db.js"
 
 const bot = "kucoin";
 const directory = "./#kucoin/";
@@ -15,6 +16,7 @@ export default class KucoinBot {
   constructor() {
     this.quoteCoinBalance;
     this.baseCoinBalance;
+    this.balanceBeforeTrade;
     this.tradingAmount;
     this.ticker;
     this.buyOrderId;
@@ -24,6 +26,8 @@ export default class KucoinBot {
     this.coinPair;
     this.selectedConfig;
     this.selectedCoin;
+    this.dbBuyOrder;
+    this.dbSellOrder;
   }
 
   // getters and setter, get and set value of private object variables outside the class bounds
@@ -54,8 +58,18 @@ export default class KucoinBot {
         this.#userConfig["trade_configs"][this.selectedConfig]["pairing"],
     });
     // console.log(this.quoteCoinBalance);
-    console.log(`Your ${this.#userConfig['trade_configs'][this.selectedConfig]['pairing']} balance is ${this.quoteCoinBalance["data"][0]['available']}\n`);
+    console.log(
+      `Your ${
+        this.#userConfig["trade_configs"][this.selectedConfig]["pairing"]
+      } balance is ${this.quoteCoinBalance["data"][0]["available"]}\n`
+    );
     console.log(chalk.yellow("Please check your config before proceeding\n"));
+  }
+
+  async storeBalanceBeforeTrade() {
+    if (!this.balanceBeforeTrade) {
+      this.balanceBeforeTrade = this.quoteCoinBalance
+    }
   }
 
   async getTradingAmount() {
@@ -90,6 +104,17 @@ export default class KucoinBot {
       this.buyOrderId["data"]["orderId"]
     );
     console.log(this.buyOrder["data"]);
+    // Validate Buy Order
+    this.validateBuyOrder();
+  }
+
+  async validateBuyOrder() {
+    if (
+      this.buyOrder["data"]["dealFunds"] == 0 ||
+      this.buyOrder["data"]["dealSize"] == 0
+    ) {
+      this.getBuyOrderDetails();
+    }
   }
 
   async getBaseCoinBalance() {
@@ -130,7 +155,7 @@ export default class KucoinBot {
         console.log("Buy order details not received yet");
       }
       if (this.sellOrderId) {
-        break
+        break;
       }
     }
   }
@@ -150,11 +175,21 @@ export default class KucoinBot {
   }
 
   async marketSellOrder() {
-    const sellQty = Math.floor(parseFloat(this.baseCoinBalance["data"][0]['available']) * this.#userConfig['trade_configs'][this.selectedConfig]['sell_qty_from_wallet'])
-    
-    // console.log(this.quoteCoinBalance["data"][0]['available']);
-    // console.log(sellQty);
-
+    let sellQty;
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      try {
+        sellQty = Math.floor(
+          parseFloat(this.baseCoinBalance["data"][0]["available"]) *
+            this.#userConfig["trade_configs"][this.selectedConfig][
+              "sell_qty_from_wallet"
+            ]
+        );
+        break;
+      } catch (error) {
+        await this.getBaseCoinBalance();
+      }
+    }
     this.sellOrderId = await kucoin.rest.Trade.Orders.postOrder(
       {
         clientOid: uuidv4(),
@@ -166,6 +201,8 @@ export default class KucoinBot {
         size: sellQty,
       }
     );
+    // console.log(this.quoteCoinBalance["data"][0]['available']);
+    // console.log(sellQty);
   }
 
   async getSellOrderDetails() {
@@ -174,6 +211,18 @@ export default class KucoinBot {
       this.sellOrderId["data"]["orderId"]
     );
     console.log(this.sellOrder["data"]);
+  }
+
+  async displayResults() {
+    // Display pump results
+  }
+
+  async prepareDBInsert() {
+    // Place data into this.dbBuyOrder and this.dbSellOrder;
+  }
+
+  async displayTimeDuration() {
+    //Compute time and log to console
   }
 
   async timer() {}
@@ -217,8 +266,14 @@ export default class KucoinBot {
     await this.checkMargin();
     await this.getSellOrderDetails();
 
-    // Insert into db
     // Print Balance
+    await this.getquoteCoinBalance();
+    // await this.displayResults();
+    // Insert into db
+    // await this.prepareDBInsert()
+    // await insertIntoDB(bot, this.dbBuyOrder, this.buyOrderId["data"]["orderId"])
+    // await insertIntoDB(bot, this.dbSellOrder, this.sellOrderId["data"]["orderId"])
     // Print time duration
+    // await this.displayTimeDuration()
   }
 }

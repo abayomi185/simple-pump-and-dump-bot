@@ -14,7 +14,7 @@ trade_configs:
     #Amount from wallet to use for trade buy; range 0 to 1
     buy_qty_from_wallet: 0.5
     #Profit margin multiplier; 0.5 equals 50% gain
-    profit_margin: 1.0
+    profit_margin: 2.0
     #Amount from wallet to use for trade sell; range 0 to 1
     sell_qty_from_wallet: 1
     #Refresh interval in milliseconds to check market for current price

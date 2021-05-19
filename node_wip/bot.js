@@ -5,6 +5,7 @@ import {
   inquirerSelectExchange,
 } from "./src/prompts.js";
 import { importGlobalConfig } from "./src/import.js"
+import { connectToDB } from "./src/db.js"
 
 import BinanceBot from "./src/bot-binance.js"
 import KucoinBot from "./src/bot-kucoin.js"
@@ -18,6 +19,8 @@ export const exchange_color = {
 async function main() {
 
   header();
+
+  connectToDB()
 
   const selectedExchange = await inquirerSelectExchange();
 
