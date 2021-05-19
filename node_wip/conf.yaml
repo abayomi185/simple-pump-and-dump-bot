@@ -6,5 +6,5 @@
 #   Kucoin
 
 Exchange:
-  - Binance
+  # - Binance
   - Kucoin
