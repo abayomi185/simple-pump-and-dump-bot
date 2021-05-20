@@ -52,7 +52,7 @@ export const insertIntoDB = async (exchange, order, order_id) => {
       symbol,
       price,
       order["fee"],
-      order["size"],
+      order["dealSize"],
       order["dealFunds"],
     ]
   );

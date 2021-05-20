@@ -4,7 +4,7 @@ import chalk from "chalk";
 
 import { inquirerImportUserDetails } from "./import.js";
 import { inquirerSelectTradeConfig, inquirerInputCoin } from "./prompts.js";
-import { insertIntoDB } from "./db.js"
+import { insertIntoDB, closeDB } from "./db.js";
 
 const bot = "kucoin";
 const directory = "./#kucoin/";
@@ -26,8 +26,8 @@ export default class KucoinBot {
     this.coinPair;
     this.selectedConfig;
     this.selectedCoin;
-    this.dbBuyOrder;
-    this.dbSellOrder;
+    this.dbBuyOrder = {};
+    this.dbSellOrder = {};
   }
 
   // getters and setter, get and set value of private object variables outside the class bounds
@@ -45,13 +45,14 @@ export default class KucoinBot {
   }
 
   async validateAPIConnection() {
+    // Function to check that connection can be established and secrets are valid
     const acctInfo = await this.getAccountUsers();
     if (acctInfo.code !== "200000") {
-      throw "API secrets cannot be validated";
+      throw acctInfo.msg;
     }
   }
 
-  async getquoteCoinBalance() {
+  async getquoteCoinBalance(endpoint=false) {
     this.quoteCoinBalance = await kucoin.rest.User.Account.getAccountsList({
       type: "trade",
       currency:
@@ -63,12 +64,15 @@ export default class KucoinBot {
         this.#userConfig["trade_configs"][this.selectedConfig]["pairing"]
       } balance is ${this.quoteCoinBalance["data"][0]["available"]}\n`
     );
-    console.log(chalk.yellow("Please check your config before proceeding\n"));
+    if (!endpoint) {
+      console.log(chalk.yellow("Please check your config before proceeding\n"));
+    }
   }
 
   async storeBalanceBeforeTrade() {
+    // Save balance before trade
     if (!this.balanceBeforeTrade) {
-      this.balanceBeforeTrade = this.quoteCoinBalance
+      this.balanceBeforeTrade = this.quoteCoinBalance;
     }
   }
 
@@ -83,8 +87,7 @@ export default class KucoinBot {
   }
 
   async marketBuyOrder() {
-    // current_price = client.get_ticker(symbol=selected_coin_pair)
-    // buy_qty = math.floor(avail_trading_amount / float(current_price['price']))
+    // Execute market buy
     this.buyOrderId = await kucoin.rest.Trade.Orders.postOrder(
       {
         clientOid: uuidv4(),
@@ -99,7 +102,7 @@ export default class KucoinBot {
   }
 
   async getBuyOrderDetails() {
-    // Use orderId and get order details
+    // Get buy order details with buyOrderId
     this.buyOrder = await kucoin.rest.Trade.Orders.getOrderByID(
       this.buyOrderId["data"]["orderId"]
     );
@@ -109,6 +112,7 @@ export default class KucoinBot {
   }
 
   async validateBuyOrder() {
+    // Check that buy order object has valid values
     if (
       this.buyOrder["data"]["dealFunds"] == 0 ||
       this.buyOrder["data"]["dealSize"] == 0
@@ -125,6 +129,8 @@ export default class KucoinBot {
   }
 
   async checkMargin() {
+    // Check and compare market value
+    // Execute sell order if profit margin is reached
     const margin =
       this.#userConfig["trade_configs"][this.selectedConfig]["profit_margin"];
     const interval =
@@ -161,6 +167,7 @@ export default class KucoinBot {
   }
 
   async fallbackAction() {
+    // Fallback function if profit margin is not reached
     const sleepDuration =
       this.#userConfig["trade_configs"][this.selectedConfig][
         "sell_fallback_timeout_ms"
@@ -175,6 +182,7 @@ export default class KucoinBot {
   }
 
   async marketSellOrder() {
+    // Execute sell order
     let sellQty;
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -206,19 +214,56 @@ export default class KucoinBot {
   }
 
   async getSellOrderDetails() {
-    console.log(this.sellOrderId);
+    // Get sell order using sellOrderId
     this.sellOrder = await kucoin.rest.Trade.Orders.getOrderByID(
       this.sellOrderId["data"]["orderId"]
     );
-    console.log(this.sellOrder["data"]);
+    console.log(this.sellOrder["data"] + "\n");
   }
 
   async displayResults() {
     // Display pump results
+    const balanceBeforeTrade = parseFloat(
+      this.balanceBeforeTrade["data"][0]["available"]
+    );
+    const balanceAfterTrade = parseFloat(
+      this.quoteCoinBalance["data"][0]["available"]
+    );
+
+    const difference = balanceAfterTrade - balanceBeforeTrade;
+    const percentage = (difference / balanceBeforeTrade) * 100;
+
+    if (balanceAfterTrade < balanceBeforeTrade) {
+      console.log(chalk.yellow("A %.2f loss\n"),percentage);
+    }
+    if (balanceAfterTrade > balanceBeforeTrade) {
+      console.log(chalk.green("A %.2f gain\n"),percentage);
+    }
   }
 
   async prepareDBInsert() {
     // Place data into this.dbBuyOrder and this.dbSellOrder;
+    // this.dbBuyOrder.clientOid 
+    // this.dbBuyOrder.id
+    // this.dbBuyOrder.symbol
+    // this.dbBuyOrder.type
+    // this.dbBuyOrder.side
+    // this.dbBuyOrder.timeInForce
+    // this.dbBuyOrder.createdAt
+    // this.dbBuyOrder.fee
+    // this.dbBuyOrder.size
+    // this.dbBuyOrder.dealFunds
+
+    // this.dbSellOrder.clientOid
+    // this.dbSellOrder.id
+    // this.dbSellOrder.symbol
+    // this.dbSellOrder.type
+    // this.dbSellOrder.side
+    // this.dbSellOrder.timeInForce
+    // this.dbSellOrder.createdAt
+    // this.dbSellOrder.fee
+    // this.dbSellOrder.size
+    // this.dbSellOrder.dealFunds
   }
 
   async displayTimeDuration() {
@@ -242,6 +287,7 @@ export default class KucoinBot {
 
     // store balance
     await this.getquoteCoinBalance();
+    this.storeBalanceBeforeTrade()
     // console.log(this.quoteCoinBalance);
     await this.getTradingAmount();
 
@@ -267,12 +313,19 @@ export default class KucoinBot {
     await this.getSellOrderDetails();
 
     // Print Balance
-    await this.getquoteCoinBalance();
-    // await this.displayResults();
+    await this.getquoteCoinBalance(true);
+    
     // Insert into db
     // await this.prepareDBInsert()
     // await insertIntoDB(bot, this.dbBuyOrder, this.buyOrderId["data"]["orderId"])
+    await insertIntoDB(bot, this.buyOrder["data"], this.buyOrderId["data"]["orderId"])
     // await insertIntoDB(bot, this.dbSellOrder, this.sellOrderId["data"]["orderId"])
+    await insertIntoDB(bot, this.sellOrder["data"], this.sellOrderId["data"]["orderId"])
+    await closeDB()
+    
+    // Show profit gain or loss
+    await this.displayResults();
+    
     // Print time duration
     // await this.displayTimeDuration()
   }

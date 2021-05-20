@@ -1,10 +1,20 @@
 # Cryto-bot Global config
 
-# Remove or add exchange to disble or enable in bot
-# Current exchanges available:
+# Remove or add exchange to disable or enable in bot
+# Exchange bots available:
 #   Binance
 #   Kucoin
 
-Exchange:
+exchange:
   # - Binance
   - Kucoin
+
+# Key press to exit trade
+key_press:
+  trade_exit_key: ""
+
+# Discord integration
+discord:
+
+# Telegram integration
+telegram:
