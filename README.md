@@ -62,7 +62,7 @@ Good Luck!
   - Improving software structure; OOP and modules
 - 20-05-21
   - Node kucoin bot is functional with local database support
-  - Kucoin introduced price protection strategy which gives unexpected results in pumps causing the bot not to sell. Solution is implemented but requires testing.
+  - Kucoin introduced price protection strategy which gives unexpected results in pumps causing the bot not to sell. Potential workaround is implemented but requires testing.
   - Python version will soon reach end-of-life
 <br/>
 <br/>
