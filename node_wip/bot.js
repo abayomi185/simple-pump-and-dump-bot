@@ -32,7 +32,6 @@ async function main() {
       break;
     }
     case 'Kucoin': {
-      // Do setup to import right config
       // pumpBot = new KucoinBot().run()
       new KucoinBot().run()
       break;
