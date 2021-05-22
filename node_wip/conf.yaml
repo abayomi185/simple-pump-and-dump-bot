@@ -18,3 +18,8 @@ discord:
 
 # Telegram integration
 telegram:
+  # Retrieved coin will be capitalised
+  pump_group_1:
+    prefix: "" # "The coin is: " in "The coin is DOGE" 
+    special_character: "" # '$' in $DOGE
+    suffix_to_split: "" # "-" in DOGE-USDT => DOGE

@@ -3,7 +3,8 @@ import inquirer from "inquirer"; // Nice menus
 import figlet from "figlet"; // ASCII in terminal
 import boxen from "boxen"; // Boxes in terminal
 
-import { crypto_exchange, exchange_color } from "../bot.js";
+import { coin_scraper, crypto_exchange } from "../bot.js";
+import { exchangeColors } from "./lut.js";
 
 export const header = () => {
   console.log(
@@ -17,6 +18,33 @@ export const header = () => {
       whitespaceBreak: true,
     }) + "\n\n"
   );
+};
+
+export const inquirerSelectScraper = async () => {
+  let answer;
+  if (coin_scraper.length > 1) {
+    await inquirer
+      .prompt([
+        {
+          type: "checkbox",
+          name: "scraper",
+          message: "Please select a coin scraper",
+          choices: coin_scraper,
+        },
+      ])
+      .then((answers) => {
+        answer = answers.scraper;
+      })
+      .catch((error) => {
+        if (error.isTtyError) {
+          // Prompt couldn't be rendered in the current environment
+        } else {
+          // Something else went wrong
+        }
+      });
+    console.log(answer);
+    return answer;
+  }
 };
 
 export const inquirerSelectExchange = async () => {
@@ -37,7 +65,7 @@ export const inquirerSelectExchange = async () => {
             left: 17,
             right: 17,
           },
-          borderColor: exchange_color[answers.crypto_exchange],
+          borderColor: exchangeColors[answers.crypto_exchange],
           borderStyle: "bold",
         })
       );
