@@ -14,7 +14,7 @@ export const inquirerImportScraperConfig = () => {
   let options = [];
   options.push("manual coin entry");
   try {
-    const discordConfigs = Object.keys(config.discord);
+    const discordConfigs = Object.keys(config.discord.groups);
     for (const entry in discordConfigs) {
       const optionName = "Discord++" + entry;
       options.push(optionName);
@@ -23,7 +23,7 @@ export const inquirerImportScraperConfig = () => {
     console.log("No Scraper config for Discord");
   }
   try {
-    const telegramConfigs = Object.keys(config.telegram);
+    const telegramConfigs = Object.keys(config.telegram.groups);
     for (const entry in telegramConfigs) {
       const optionName = "Telegram ++ " + telegramConfigs[entry];
       options.push(optionName);

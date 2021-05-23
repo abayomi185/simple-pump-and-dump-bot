@@ -1,5 +1,7 @@
 # Cryto-bot Global config
 
+# RENAME THIS FILE TO conf.yaml
+
 # Remove or add exchange to disable or enable in bot
 # Exchange bots available:
 #   Binance
@@ -15,11 +17,15 @@ key_press:
 
 # Discord integration
 discord:
+  groups:
 
 # Telegram integration
 telegram:
   # Retrieved coin will be capitalised
-  pump_group_1:
-    prefix: "" # "The coin is: " in "The coin is DOGE" 
-    special_character: "" # '$' in $DOGE
-    suffix_to_split: "" # "-" in DOGE-USDT => DOGE
+  api_id: 
+  api_hash: 
+  groups:
+    pump_group_1:
+      prefix: "" # "The coin is: " in "The coin is DOGE" 
+      special_character: "" # '$' in $DOGE
+      suffix_to_split: "" # "-" in DOGE-USDT => DOGE
