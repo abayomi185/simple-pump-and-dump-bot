@@ -63,6 +63,10 @@ Good Luck!
   - Node kucoin bot is functional with local database support
   - Kucoin introduced price protection strategy which gives unexpected results in pumps causing the bot not to sell. Potential workaround is implemented but requires testing.
   - Python version will soon reach end-of-life
+- 23-05-21
+  - Work has started on implementing Telegram scraper
+  - Customisable "panic sell button" coined by AlphaAlex1 is being implemented in tandem
+  - Delays to development due to upcoming exams.
 <br/>
 <br/>
 <a href="https://www.buymeacoffee.com/abayomi185" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Fly me to the moon" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;"></a><br/>
