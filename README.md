@@ -1,4 +1,3 @@
-> Please don't use Node version yet. Tests are still being done
 # Pump and Dump Bot
 ## For Binance and Kucoin
 
