@@ -12,7 +12,7 @@ import {
 import { exchangeColors } from "./src/lut.js";
 import { connectToDB } from "./src/db.js";
 
-import TelegramScraper from "./src/telegram.js";
+import { initScraperFromSelection } from "./src/scraper.js"
 
 import BinanceBot from "./src/bot-binance.js";
 import KucoinBot from "./src/bot-kucoin.js";
@@ -21,17 +21,28 @@ header()
 export const coin_scraper = inquirerImportScraperConfig();
 export const crypto_exchange = importExchangeList();
 export const exchange_color = exchangeColors;
-export let selectedScraperConfig;
+export let selectedScrapers;
+
+export let manualEntry; // Option to disable manual entry; future use
+export let scraper = {
+  manual: null,
+  telegramScraper: null,
+  discordScraper: null
+};
+
+// export function modifyScraper( value ) { telegramScraper = value; }
 
 async function main() {
 
   connectToDB();
 
-  selectedScraperConfig = await inquirerSelectScraper();
-
-  new TelegramScraper().run();
+  selectedScrapers = await inquirerSelectScraper();
+  
+  initScraperFromSelection(selectedScrapers)
 
   const selectedExchange = await inquirerSelectExchange();
+
+  // console.log(scraper.telegramScraper);
 
   // let pumpBot = null
 

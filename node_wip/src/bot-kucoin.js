@@ -6,8 +6,13 @@ import { inquirerImportUserDetails } from "./import.js";
 import { inquirerSelectTradeConfig, inquirerInputCoin } from "./prompts.js";
 import { insertIntoDB, closeDB } from "./db.js";
 
+import path from "path"
+import dirname from 'es-dirname'
+
+// import { telegramScraper } from "../bot.js";
+
 const bot = "kucoin";
-const directory = "./#kucoin/";
+const directory = path.join(dirname(), "../#kucoin/")
 
 export default class KucoinBot {
   #userSecrets;
@@ -218,7 +223,9 @@ export default class KucoinBot {
     this.sellOrder = await kucoin.rest.Trade.Orders.getOrderByID(
       this.sellOrderId["data"]["orderId"]
     );
-    console.log(this.sellOrder["data"] + "\n");
+    console.log("\n");
+    console.log(this.sellOrder["data"]);
+    console.log("\n");
   }
 
   async displayResults() {
@@ -234,10 +241,10 @@ export default class KucoinBot {
     const percentage = (difference / balanceBeforeTrade) * 100;
 
     if (balanceAfterTrade < balanceBeforeTrade) {
-      console.log(chalk.yellow("A %.2f loss\n"),percentage);
+      console.log(chalk.yellow(`A ${percentage.toFixed(2)} loss.\n`));
     }
     if (balanceAfterTrade > balanceBeforeTrade) {
-      console.log(chalk.green("A %.2f gain\n"),percentage);
+      console.log(chalk.green(`A ${percentage.toFixed(2)} gain.\n`));
     }
   }
 
@@ -330,3 +337,6 @@ export default class KucoinBot {
     // await this.displayTimeDuration()
   }
 }
+
+
+// if telegramScraper

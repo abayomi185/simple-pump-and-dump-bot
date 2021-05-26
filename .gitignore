@@ -6,3 +6,4 @@ secrets*.yaml
 .DS_Store
 node_modules
 conf.yaml
+telegram.json

@@ -734,6 +734,11 @@ error-ex@^1.2.0:
   dependencies:
     is-arrayish "^0.2.1"
 
+es-dirname@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/es-dirname/-/es-dirname-0.1.0.tgz#cfc5cd40ac9cca61c9f4c83d13123e1114762b00"
+  integrity sha512-tcTj4pVFXe5EdiHCybjynDTlvkwuNN6JCg9+5BVB+n9qQoMyWOtxpREoL7rGO3sCIAX55Y6CYZi4s1c30uxvPg==
+
 es5-ext@^0.10.35, es5-ext@^0.10.50, es5-ext@~0.10.14:
   version "0.10.53"
   resolved "https://registry.npmjs.org/es5-ext/-/es5-ext-0.10.53.tgz"

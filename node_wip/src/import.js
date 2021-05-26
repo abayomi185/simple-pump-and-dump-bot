@@ -1,11 +1,30 @@
 import fs from "fs";
 import yaml from "js-yaml";
+import path from "path"
 
-const config_import = "./conf.yaml";
+import dirname from 'es-dirname'
+
+const config_import = path.join(dirname(), "../conf.yaml")
 const config = yaml.load(fs.readFileSync(config_import, "utf-8"));
 
 export const importExchangeList = () => {
   return config.exchange;
+};
+
+export const importDiscordAPIDetails = async () => {
+  if (!config.discord.api_id && !config.discord.api_hash) {
+    console.log("Discord API details incomplete or not found");
+  } else {
+    return [config.discord.api_id, config.discord.api_hash];
+  }
+};
+
+export const importTelegramAPIDetails = async () => {
+  if (!config.telegram.api_id && !config.telegram.api_hash) {
+    console.log("Telegram API details incomplete or not found");
+  } else {
+    return [config.telegram.api_id, config.telegram.api_hash];
+  }
 };
 
 export const inquirerImportScraperConfig = () => {
@@ -16,7 +35,7 @@ export const inquirerImportScraperConfig = () => {
   try {
     const discordConfigs = Object.keys(config.discord.groups);
     for (const entry in discordConfigs) {
-      const optionName = "Discord++" + entry;
+      const optionName = "discord++" + entry;
       options.push(optionName);
     }
   } catch (error) {
@@ -25,7 +44,7 @@ export const inquirerImportScraperConfig = () => {
   try {
     const telegramConfigs = Object.keys(config.telegram.groups);
     for (const entry in telegramConfigs) {
-      const optionName = "Telegram ++ " + telegramConfigs[entry];
+      const optionName = "telegram ++ " + telegramConfigs[entry];
       options.push(optionName);
     }
   } catch (error) {
