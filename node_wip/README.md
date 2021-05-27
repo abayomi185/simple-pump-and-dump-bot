@@ -1,6 +1,6 @@
 ## Node JS Edition
 
-> This version is still in development
+> This version is still in development; Kucoin bot is functional
 
 Install [node](https://nodejs.org/en/download/)
 
