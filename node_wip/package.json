@@ -20,7 +20,6 @@
     "es-dirname": "^0.1.0",
     "figlet": "^1.5.0",
     "inquirer": "^8.0.0",
-    "iohook": "^0.9.1",
     "js-yaml": "^4.1.0",
     "keypress": "^0.2.1",
     "kucoin-node-sdk": "^1.0.3",
