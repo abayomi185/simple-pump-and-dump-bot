@@ -11,6 +11,10 @@ export const importExchangeList = () => {
   return config.exchange;
 };
 
+export const scraperDelay = () => {
+  return config.scraper_delay
+}
+
 export const importDiscordAPIDetails = async () => {
   if (!config.discord.api_id && !config.discord.api_hash) {
     console.log("Discord API details incomplete or not found");

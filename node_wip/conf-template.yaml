@@ -13,7 +13,10 @@ exchange:
 
 # Key press to exit trade
 key_press:
-  trade_exit_key: ""
+  # trade_exit_key: ""
+  panic_sell_key:
+
+scraper_delay: 1000 #Delay in ms. Required to prevent hitting API rate limit
 
 # Discord integration
 discord:
@@ -22,10 +25,13 @@ discord:
 # Telegram integration
 telegram:
   # Retrieved coin will be capitalised
-  api_id: 
-  api_hash: 
+  api_id:
+  api_hash:
   groups:
     pump_group_1:
-      prefix: "" # "The coin is: " in "The coin is DOGE" 
+      bot: Kucoin
+      group_name: kucoin_pumps
+      prefix: "Coin is: " # "The coin is: " in "The coin is DOGE"
+      alt_prefix: "https://trade.kucoin.com/" # Alternative prefix
       special_character: "" # '$' in $DOGE
       suffix_to_split: "" # "-" in DOGE-USDT => DOGE

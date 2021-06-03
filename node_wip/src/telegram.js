@@ -14,10 +14,11 @@ export default class TelegramScraper {
     this.selectedScraperConfig;
     this.apiId;
     this.apiHash;
-    this.firstRun();
+    this.init();
   }
 
   async init() {
+    [this.apiId, this.apiHash] = await importTelegramAPIDetails();
     this.#mtproto = new MTProto({
       api_id: this.apiId,
       api_hash: this.apiHash,
@@ -26,6 +27,8 @@ export default class TelegramScraper {
         path: path.join(dirname(), "./data/telegram.json"),
       },
     });
+
+    // this.scrape("kucoin_pumps");
   }
 
   // Error handling code from Mproto-core documentation
@@ -58,49 +61,43 @@ export default class TelegramScraper {
     }
   }
 
-  async test1() {
-    console.log(await this.#mtproto.call("channels.getInactiveChannels"));
-  }
-
-  async test2() {
-    console.log("1");
+  async getPumpGroupDetails(groupName) {
     const resolvedPeer = await this.call("contacts.resolveUsername", {
-      username: "Kucoin Pumps",
+      username: groupName,
     });
-
-    console.log("2");
-    const channel = resolvedPeer.chats.find(
+    const channel = await resolvedPeer.chats.find(
       (chat) => chat.id === resolvedPeer.peer.channel_id
     );
-
-    console.log("3");
     const inputPeer = {
       _: "inputPeerChannel",
       channel_id: channel.id,
       access_hash: channel.access_hash,
     };
+    return inputPeer;
+  }
 
-    const LIMIT_COUNT = 10;
-    // const messages = [];
-
-    console.log("4");
-    const messageResults = this.call("messages.getMessage", {
+  async getMessages(inputPeer) {
+    // Message count limit, lower would generally be faster
+    const LIMIT_COUNT = 3;
+    const messageResults = await this.call("messages.getHistory", {
       peer: inputPeer,
       limit: LIMIT_COUNT,
     });
-
-    console.log(messageResults.count());
-    console.log(messageResults);
+    return messageResults.messages;
   }
 
-  // First run function to retrieve api details
-  async firstRun() {
-    [this.apiId, this.apiHash] = await importTelegramAPIDetails();
-    await this.init();
-
-    // await this.check2()
+  async parseMessages(messages) {
+    // The regex ting here
+    // look into asynchronous for loop
+    // for message in messages, message.message is ...
   }
 
-  // Get last three messages or something
-  async scrape() {}
+  // Main function to be called from bot
+  async scrape(groupName) {
+    const peer = await this.getPumpGroupDetails(groupName);
+
+    const messages = await this.getMessages(peer);
+
+    console.log(messages[0]);
+  }
 }

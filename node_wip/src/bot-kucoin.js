@@ -41,6 +41,9 @@ export default class KucoinBot {
     kucoin.init(this.#userSecrets);
   }
 
+  // Important!
+  // Function to get all tickers and get base and minimum order quantity
+
   async getTicker() {
     this.ticker = await kucoin.rest.Market.Symbols.getTicker(this.coinPair);
   }

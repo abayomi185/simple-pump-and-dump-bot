@@ -1,6 +1,7 @@
 // import { modifyScraper } from "../bot.js";
 import { scraper } from "../bot.js";
 import TelegramScraper from "./telegram.js";
+import DiscordScraper from "./discord.js";
 
 export const initScraperFromSelection = (selectedScrapers) => {
   let manualEntry = false;
@@ -16,13 +17,14 @@ export const initScraperFromSelection = (selectedScrapers) => {
         // eslint-disable-next-line no-import-assign
         // telegramScraper = new TelegramScraper()
         // modifyScraper(new TelegramScraper())
-        scraper.telegramScraper = new TelegramScraper().firstRun();
+        scraper.telegramScraper = new TelegramScraper();
         isTelegramPresent = true;
       }
 
       if (match[0] == "discord" && isDiscordPresent == false) {
         // eslint-disable-next-line no-import-assign
         // scraper.discordScraper = new TelegramScraper()
+        scraper.discordScraper = new DiscordScraper()
         isDiscordPresent = true;
       }
     } catch (error) {
