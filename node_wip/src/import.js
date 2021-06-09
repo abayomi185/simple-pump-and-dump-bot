@@ -11,8 +11,12 @@ export const importExchangeList = () => {
   return config.exchange;
 };
 
-export const scraperDelay = () => {
+export const importScraperDelay = () => {
   return config.scraper_delay
+}
+
+export const importScraperGroupDetails = (scraper, groupName) => {
+    return config[scraper]['groups'][groupName]
 }
 
 export const importDiscordAPIDetails = async () => {

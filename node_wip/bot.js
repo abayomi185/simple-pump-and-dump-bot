@@ -12,7 +12,7 @@ import {
 import { exchangeColors } from "./src/lut.js";
 import { connectToDB } from "./src/db.js";
 
-import { initScraperFromSelection } from "./src/scraper.js"
+import { initScraperFromSelection, getSelectedGroups } from "./src/scraper.js"
 
 import BinanceBot from "./src/bot-binance.js";
 import KucoinBot from "./src/bot-kucoin.js";
@@ -21,7 +21,8 @@ header()
 export const coin_scraper = inquirerImportScraperConfig();
 export const crypto_exchange = importExchangeList();
 export const exchange_color = exchangeColors;
-export let selectedScrapers;
+export let inquirerSelectedScrapers;
+export let selectedScraperGroups;
 
 export let manualEntry; // Option to disable manual entry; future use
 export let scraper = {
@@ -36,9 +37,11 @@ async function main() {
 
   connectToDB();
 
-  selectedScrapers = await inquirerSelectScraper();
+  inquirerSelectedScrapers = await inquirerSelectScraper();
+
+  initScraperFromSelection(inquirerSelectedScrapers)
   
-  initScraperFromSelection(selectedScrapers)
+  selectedScraperGroups = await getSelectedGroups()
 
   const selectedExchange = await inquirerSelectExchange();
 
