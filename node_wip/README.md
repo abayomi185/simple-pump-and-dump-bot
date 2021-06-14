@@ -20,7 +20,7 @@ To use/test the Telegram coin name scraper, fill in your api details and group c
 
 Go to the bot config file, starting with "#" (e.g #Kucoin) and change the ```template-secrets-xxxx.yaml``` file to ```secrets-xxxx.yaml``` then fill in your api details into your secrets file.
 
-To use the telegram scraper, run ```node ./src/telegram-register.js``` and follow the prompt to login. This saves json data about your login into /src/data as per the telegram API library
+To use the telegram scraper, run ```node ./src/scrapers/telegram-register.js``` and follow the prompt to login. This saves json data about your login into /src/data as per the telegram API library.
 
 run ```npm start``` to start the bot.
 
