@@ -48,7 +48,7 @@ export default class TelegramScraper {
 
     // const allTickers = JSON.parse(fs.readFileSync("./test.json"));
 
-    // this.scrape(null, null, "kucoin_pumps", test_config, "USDT", allTickers);
+    // this.scrape(null, "kucoin_pumps", test_config, "USDT", allTickers);
   }
 
   // Error handling code from Mproto-core documentation

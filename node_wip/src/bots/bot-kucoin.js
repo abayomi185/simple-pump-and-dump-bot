@@ -36,7 +36,6 @@ export default class KucoinBot {
     this.coinPair;
     this.selectedConfig;
     this.selectedCoin;
-    this.scrapedCoin;
     this.dbBuyOrder = {};
     this.dbSellOrder = {};
   }
@@ -107,7 +106,7 @@ export default class KucoinBot {
   async scrapeCoin() {
     //loop here, some imports, some time based things
 
-    let coinName = [];
+    let coinName;
     const isDiscordScraperAcitve = scraper.discordScraper ? true : false;
     const isTelegramScraperActive = scraper.telegramScraper ? true : false;
 
@@ -118,24 +117,24 @@ export default class KucoinBot {
     if (isTelegramScraperActive) {
       const scraperGroups = selectedScraperGroups.telegram;
 
-      await Promise.all(Object.entries(scraperGroups).map(async (entry) => {
-        // scrape(bot, groupName, groupConfigs, coinPair, coinList)
-        coinName.push(
-          await scraper.telegramScraper.scrape(
+      await Promise.all(
+        Object.entries(scraperGroups).map(async (entry) => {
+          // scrape(bot, groupName, groupConfigs, coinPair, coinList)
+          coinName = await scraper.telegramScraper.scrape(
             bot,
             entry[1].group_name,
             entry[1],
             this.#userConfig["trade_configs"][this.selectedConfig]["pairing"],
             this.allTickers.data
-          )
-        );
-      })).then(console.log(coinName));
+          );
+        })
+      );
     }
+
+    console.log(coinName);
 
     // TODO
     // Amalgamate the coinNames from different groups before returning
-
-    // console.log(coinName);
 
     return coinName;
   }
@@ -143,10 +142,10 @@ export default class KucoinBot {
   async checkInputCoinStatus() {
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      // Await here prevents looping and removing it causes crashes as it skips ahead
-      if (typeof this.selectedCoin === "string") {
-        break;
+      if (this.selectedCoin) {
+        break
       }
+      await new Promise((r) => setTimeout(r, 1))
     }
   }
 
@@ -359,16 +358,12 @@ export default class KucoinBot {
     await this.getTradingAmount();
 
     // Scraper modifications
-    this.scrapedCoin = this.scrapeCoin();
-    // this.selectedCoin = Promise.resolve(this.scrapeCoin()).then((result) => {
-    //   console.log(result);
-    //   return result;
-    // });
+    this.scrapeCoin().then(result => {this.selectedCoin = result})
 
-    //It is possible this assigns a promise to the selectedCoin and nullifies the scraper return
     // Scraper is untested, this can be added when scraper is confirmed to work
     // if (scraper.manual === true) {
-    this.selectedCoin = inquirerInputCoin();
+    // this.selectedCoin = inquirerInputCoin();
+    inquirerInputCoin().then(result => {this.selectedCoin = result})
     // }
 
     await this.checkInputCoinStatus();
