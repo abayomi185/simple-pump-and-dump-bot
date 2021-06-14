@@ -3,7 +3,7 @@ import inquirer from "inquirer"; // Nice menus
 import figlet from "figlet"; // ASCII in terminal
 import boxen from "boxen"; // Boxes in terminal
 
-import { coin_scraper, crypto_exchange } from "../bot.js";
+import { coin_scraper, crypto_exchange } from "../../bot.js";
 import { exchangeColors } from "./lut.js";
 
 export const header = () => {

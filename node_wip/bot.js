@@ -4,18 +4,18 @@ import {
   header,
   inquirerSelectScraper,
   inquirerSelectExchange,
-} from "./src/prompts.js";
+} from "./src/interface/prompts.js";
 import {
   inquirerImportScraperConfig,
   importExchangeList,
-} from "./src/import.js";
-import { exchangeColors } from "./src/lut.js";
-import { connectToDB } from "./src/db.js";
+} from "./src/io/import.js";
+import { exchangeColors } from "./src/interface/lut.js";
+import { connectToDB } from "./src/io/db.js";
 
-import { initScraperFromSelection, getSelectedGroups } from "./src/scraper.js"
+import { initScraperFromSelection, getSelectedGroups } from "./src/scrapers/scraper.js"
 
-import BinanceBot from "./src/bot-binance.js";
-import KucoinBot from "./src/bot-kucoin.js";
+import BinanceBot from "./src/bots/bot-binance.js";
+import KucoinBot from "./src/bots/bot-kucoin.js";
 
 header()
 export const coin_scraper = inquirerImportScraperConfig();

@@ -2,17 +2,21 @@ import kucoin from "kucoin-node-sdk";
 import { v4 as uuidv4 } from "uuid";
 import chalk from "chalk";
 
-import { inquirerImportUserDetails } from "./import.js";
-import { inquirerSelectTradeConfig, inquirerInputCoin } from "./prompts.js";
-import { insertIntoDB, closeDB } from "./db.js";
+import { inquirerImportUserDetails } from "../io/import.js";
+import {
+  inquirerSelectTradeConfig,
+  inquirerInputCoin,
+} from "../interface/prompts.js";
+import { insertIntoDB, closeDB } from "../io/db.js";
+import { scraper, selectedScraperGroups } from "../../bot.js";
 
-import path from "path"
-import dirname from 'es-dirname'
+import path from "path";
+import dirname from "es-dirname";
 
 // import { telegramScraper } from "../bot.js";
 
 const bot = "kucoin";
-const directory = path.join(dirname(), "../#kucoin/")
+const directory = path.join(dirname(), "../../#kucoin/");
 
 export default class KucoinBot {
   #userSecrets;
@@ -23,6 +27,7 @@ export default class KucoinBot {
     this.baseCoinBalance;
     this.balanceBeforeTrade;
     this.tradingAmount;
+    this.allTickers;
     this.ticker;
     this.buyOrderId;
     this.buyOrder;
@@ -31,6 +36,7 @@ export default class KucoinBot {
     this.coinPair;
     this.selectedConfig;
     this.selectedCoin;
+    this.scrapedCoin;
     this.dbBuyOrder = {};
     this.dbSellOrder = {};
   }
@@ -43,6 +49,10 @@ export default class KucoinBot {
 
   // Important!
   // Function to get all tickers and get base and minimum order quantity
+
+  async getAllTickers() {
+    this.allTickers = await kucoin.rest.Market.Symbols.getAllTickers();
+  }
 
   async getTicker() {
     this.ticker = await kucoin.rest.Market.Symbols.getTicker(this.coinPair);
@@ -60,7 +70,7 @@ export default class KucoinBot {
     }
   }
 
-  async getquoteCoinBalance(endpoint=false) {
+  async getquoteCoinBalance(endpoint = false) {
     this.quoteCoinBalance = await kucoin.rest.User.Account.getAccountsList({
       type: "trade",
       currency:
@@ -92,6 +102,52 @@ export default class KucoinBot {
         ]
     );
     // console.log(typeof this.tradingAmount);
+  }
+
+  async scrapeCoin() {
+    //loop here, some imports, some time based things
+
+    let coinName = [];
+    const isDiscordScraperAcitve = scraper.discordScraper ? true : false;
+    const isTelegramScraperActive = scraper.telegramScraper ? true : false;
+
+    if (isDiscordScraperAcitve) {
+      // Scrape Discord messages here
+    }
+
+    if (isTelegramScraperActive) {
+      const scraperGroups = selectedScraperGroups.telegram;
+
+      await Promise.all(Object.entries(scraperGroups).map(async (entry) => {
+        // scrape(bot, groupName, groupConfigs, coinPair, coinList)
+        coinName.push(
+          await scraper.telegramScraper.scrape(
+            bot,
+            entry[1].group_name,
+            entry[1],
+            this.#userConfig["trade_configs"][this.selectedConfig]["pairing"],
+            this.allTickers.data
+          )
+        );
+      })).then(console.log(coinName));
+    }
+
+    // TODO
+    // Amalgamate the coinNames from different groups before returning
+
+    // console.log(coinName);
+
+    return coinName;
+  }
+
+  async checkInputCoinStatus() {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      // Await here prevents looping and removing it causes crashes as it skips ahead
+      if (typeof this.selectedCoin === "string") {
+        break;
+      }
+    }
   }
 
   async marketBuyOrder() {
@@ -253,7 +309,7 @@ export default class KucoinBot {
 
   async prepareDBInsert() {
     // Place data into this.dbBuyOrder and this.dbSellOrder;
-    // this.dbBuyOrder.clientOid 
+    // this.dbBuyOrder.clientOid
     // this.dbBuyOrder.id
     // this.dbBuyOrder.symbol
     // this.dbBuyOrder.type
@@ -263,7 +319,6 @@ export default class KucoinBot {
     // this.dbBuyOrder.fee
     // this.dbBuyOrder.size
     // this.dbBuyOrder.dealFunds
-
     // this.dbSellOrder.clientOid
     // this.dbSellOrder.id
     // this.dbSellOrder.symbol
@@ -293,21 +348,37 @@ export default class KucoinBot {
     await this.initialiseAPI();
     await this.validateAPIConnection();
 
+    await this.getAllTickers();
+
     this.selectedConfig = await inquirerSelectTradeConfig(this.#userConfig);
 
     // store balance
     await this.getquoteCoinBalance();
-    this.storeBalanceBeforeTrade()
+    this.storeBalanceBeforeTrade();
     // console.log(this.quoteCoinBalance);
     await this.getTradingAmount();
 
-    this.selectedCoin = await inquirerInputCoin();
+    // Scraper modifications
+    this.scrapedCoin = this.scrapeCoin();
+    // this.selectedCoin = Promise.resolve(this.scrapeCoin()).then((result) => {
+    //   console.log(result);
+    //   return result;
+    // });
+
+    //It is possible this assigns a promise to the selectedCoin and nullifies the scraper return
+    // Scraper is untested, this can be added when scraper is confirmed to work
+    // if (scraper.manual === true) {
+    this.selectedCoin = inquirerInputCoin();
+    // }
+
+    await this.checkInputCoinStatus();
 
     this.coinPair =
       (await this.selectedCoin.toUpperCase()) +
       "-" +
       this.#userConfig["trade_configs"][this.selectedConfig]["pairing"];
 
+    // Block not in use
     // await this.getTicker();
     // console.log(await this.ticker);
 
@@ -324,22 +395,29 @@ export default class KucoinBot {
 
     // Print Balance
     await this.getquoteCoinBalance(true);
-    
+
     // Insert into db
     // await this.prepareDBInsert()
     // await insertIntoDB(bot, this.dbBuyOrder, this.buyOrderId["data"]["orderId"])
-    await insertIntoDB(bot, this.buyOrder["data"], this.buyOrderId["data"]["orderId"])
+    await insertIntoDB(
+      bot,
+      this.buyOrder["data"],
+      this.buyOrderId["data"]["orderId"]
+    );
     // await insertIntoDB(bot, this.dbSellOrder, this.sellOrderId["data"]["orderId"])
-    await insertIntoDB(bot, this.sellOrder["data"], this.sellOrderId["data"]["orderId"])
-    await closeDB()
-    
+    await insertIntoDB(
+      bot,
+      this.sellOrder["data"],
+      this.sellOrderId["data"]["orderId"]
+    );
+    await closeDB();
+
     // Show profit gain or loss
     await this.displayResults();
-    
+
     // Print time duration
     // await this.displayTimeDuration()
   }
 }
-
 
 // if telegramScraper

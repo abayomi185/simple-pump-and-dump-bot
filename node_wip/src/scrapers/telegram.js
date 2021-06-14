@@ -5,7 +5,15 @@ import path from "path";
 
 import dirname from "es-dirname";
 
-import { importTelegramAPIDetails } from "./import.js";
+import {
+  importScraperDelay,
+  importMessageHistoryCount,
+  importTelegramAPIDetails,
+  importTimeOfPump,
+} from "../io/import.js";
+
+// For Testing
+import fs from "fs";
 
 export default class TelegramScraper {
   #mtproto;
@@ -28,16 +36,19 @@ export default class TelegramScraper {
       },
     });
 
-    const test_config = {
-      bot: "Kucoin",
-      group_name: "kucoin_pumps",
-      prefix: "Coin is: ",
-      alt_prefix: "https://trade.kucoin.com/",
-      special_character: "",
-      suffix_to_split: "-",
-    };
+    // For testing
+    // const test_config = {
+    //   bot: "Kucoin",
+    //   group_name: "kucoin_pumps",
+    //   prefix: "Coin is: ",
+    //   alt_prefix: "https://trade.kucoin.com/",
+    //   special_character: "",
+    //   suffix_to_split: "-",
+    // };
 
-    this.scrape(null, null, "kucoin_pumps", test_config);
+    // const allTickers = JSON.parse(fs.readFileSync("./test.json"));
+
+    // this.scrape(null, null, "kucoin_pumps", test_config, "USDT", allTickers);
   }
 
   // Error handling code from Mproto-core documentation
@@ -70,7 +81,7 @@ export default class TelegramScraper {
     }
   }
 
-  async getSelectedGroups() {}
+  // async getSelectedGroups() {}
 
   async getPumpGroupDetails(groupName) {
     const resolvedPeer = await this.call("contacts.resolveUsername", {
@@ -89,7 +100,7 @@ export default class TelegramScraper {
 
   async getMessages(inputPeer) {
     // Message count limit, lower would generally be faster
-    const LIMIT_COUNT = 5;
+    const LIMIT_COUNT = importMessageHistoryCount();
     const messageResults = await this.call("messages.getHistory", {
       peer: inputPeer,
       limit: LIMIT_COUNT,
@@ -97,7 +108,7 @@ export default class TelegramScraper {
     return messageResults.messages;
   }
 
-  async parseMessages(messages, groupConfigs) {
+  async parseMessages(messages, groupConfigs, coinPair, coinList) {
     // The regex ting here
     // look into asynchronous for loop
     // for message in messages, message.message is ...
@@ -113,6 +124,7 @@ export default class TelegramScraper {
     const counts = {};
     var matchLengthTracker;
 
+    let coinPairOutput;
     let output;
 
     for (const messageObject of messages) {
@@ -121,7 +133,6 @@ export default class TelegramScraper {
       const re3 = special && new RegExp("(?<=(" + special + "))\\w+");
       const re4 =
         suffix_split && new RegExp("\\b\\w+(?=(" + suffix_split + "\\w+))");
-
       // const re1 = new RegExp(/\b\w[A-Z]+/);
 
       const match1 = re1 && messageObject["message"].match(re1);
@@ -163,21 +174,84 @@ export default class TelegramScraper {
       );
     }
 
-    return output;
+    // Sort something out for breaking out of loop when coin name is found
+    // Perhaps a configurable number of past messages
+    // Also a way to configure how many times to request messages from telegram
+    // Perhaps a way to sync with time of pump to prevent too many requests
+
+    // let specificTicker = allTickers.ticker.find((o) => o.symbol === "HYVE-USDT");
+
+    try {
+      coinPairOutput = output.toUpperCase() + "-" + coinPair.toUpperCase();
+      if (coinList.ticker.find((o) => o.symbol === coinPairOutput)) {
+        return output;
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // Main function to be called from bot
-  async scrape(bot, scraper, groupName, groupConfigs) {
+  async scrape(bot, groupName, groupConfigs, coinPair, coinList) {
     // This is for one instance of the scraper
 
+    // TODO
+    // Conditional check for bot and scraper in correlation with groupconfig
+    // To ensure scraper doesn't scrape on different exchange
+
+
     // Remove groupName in favour of getting the details from config file and performing an async loop
+    let coinName;
 
+    // const shortDelay = 1000;
+    const shortDelay = 5000;
+    const timeOffset = 2000;
+    let firstPass = true;
+    const pumpTime = importTimeOfPump();
+    const defaultRequestDelay = importScraperDelay();
     const peer = await this.getPumpGroupDetails(groupName);
-
     const messages = await this.getMessages(peer);
 
     // console.log(messages);
 
-    this.parseMessages(messages, groupConfigs);
+    // Loop the loop here; break if output is assigned
+    // Condition to ensure it is a coin name that was retrieved
+
+    // This could be a while true
+    while (coinName == null) {
+      // Put timeout here for API requests
+      if (pumpTime) {
+        const currentTime = Date.now();
+        if (currentTime >= pumpTime - timeOffset) {
+          firstPass
+            ? (firstPass = false)
+            : await new Promise((r) => setTimeout(r, shortDelay));
+        } else {
+          // Wait until timeOffset seconds before the pump
+          let timeDiff = pumpTime - currentTime - timeOffset;
+          if (timeDiff < 0) {
+            timeDiff = shortDelay;
+          }
+          await new Promise((r) => setTimeout(r, timeDiff));
+        }
+      }
+
+      coinName = await this.parseMessages(
+        messages,
+        groupConfigs,
+        coinPair,
+        coinList
+      );
+
+      if (coinName) {
+        break;
+      }
+
+      if (!pumpTime) {
+        await new Promise((r) => setTimeout(r, defaultRequestDelay));
+      }
+    }
+
+    return coinName;
   }
 }

@@ -7,7 +7,8 @@
   "scripts": {
     "debug": "node bot.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node bot.js"
+    "start": "node bot.js",
+    "build": "tsc -p ./"
   },
   "author": "Abayomi Ikuru",
   "license": "ISC",
@@ -28,7 +29,11 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.1",
+    "@types/node": "^15.12.2",
     "eslint": "^7.26.0",
-    "eslint-config-prettier": "^8.3.0"
+    "eslint-config-prettier": "^8.3.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.2"
   }
 }

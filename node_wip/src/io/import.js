@@ -1,23 +1,46 @@
 import fs from "fs";
 import yaml from "js-yaml";
-import path from "path"
+import path from "path";
+import chalk from "chalk";
 
-import dirname from 'es-dirname'
+import dirname from "es-dirname";
 
-const config_import = path.join(dirname(), "../conf.yaml")
+const config_import = path.join(dirname(), "../../conf.yaml");
 const config = yaml.load(fs.readFileSync(config_import, "utf-8"));
 
 export const importExchangeList = () => {
   return config.exchange;
 };
 
+export const importMessageHistoryCount = () => {
+  return config.history_count;
+};
+
 export const importScraperDelay = () => {
-  return config.scraper_delay
-}
+  return config.scraper_delay;
+};
+
+export const importTimeOfPump = () => {
+  let pumpTime;
+
+  if (pumpTime) {
+    try {
+      const timeString = config.time_of_pump;
+      pumpTime = Date.parse(timeString);
+    } catch {
+      console.log(
+        chalk.red(
+          "\nPlease check the formating of your pump_time string in your conf.yaml file\n"
+        )
+      );
+    }
+  }
+  return pumpTime;
+};
 
 export const importScraperGroupDetails = (scraper, groupName) => {
-    return config[scraper]['groups'][groupName]
-}
+  return config[scraper]["groups"][groupName];
+};
 
 export const importDiscordAPIDetails = async () => {
   if (!config.discord.api_id && !config.discord.api_hash) {

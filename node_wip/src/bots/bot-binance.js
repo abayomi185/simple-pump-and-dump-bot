@@ -1,13 +1,13 @@
 import binance from "binance-api-node";
 
-import { inquirerImportUserDetails } from "./import.js";
-import { inquirerSelectTradeConfig, inquirerInputCoin } from "./prompts.js";
+import { inquirerImportUserDetails } from "../io/import.js";
+import { inquirerSelectTradeConfig, inquirerInputCoin } from "../interface/prompts.js";
 
 import path from "path"
 import dirname from 'es-dirname'
 
 const bot = "binance";
-const directory = path.join(dirname(), "../#binance/")
+const directory = path.join(dirname(), "../../#binance/")
 
 export default class BinanceBot {
   #userSecrets;

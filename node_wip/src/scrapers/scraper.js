@@ -1,9 +1,9 @@
-// import { modifyScraper } from "../bot.js";
-import { scraper } from "../bot.js";
+// import { modifyScraper } from "../../bot.js";
+import { scraper } from "../../bot.js";
 import TelegramScraper from "./telegram.js";
 import DiscordScraper from "./discord.js";
 
-import { importScraperGroupDetails } from "./import.js";
+import { importScraperGroupDetails } from "../io/import.js";
 
 // Seems jank but it's the best method I can think of to
 // remove dependence on imports in scraper class
@@ -38,6 +38,7 @@ export const initScraperFromSelection = (selectedScrapers) => {
       if (element == "manual coin entry") {
         // eslint-disable-next-line no-unused-vars
         manualEntry = true;
+        scraper.manual = true
       }
     }
   }
@@ -86,6 +87,6 @@ export const getSelectedGroups = async () => {
   }
 
   // console.log(selectedGroups);
-
+  
   return selectedGroups;
 };

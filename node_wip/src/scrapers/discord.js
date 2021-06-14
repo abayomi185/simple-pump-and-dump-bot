@@ -3,7 +3,7 @@ import { Client } from "discord.js"
 import path from "path";
 import dirname from "es-dirname";
 
-import { importDiscordAPIDetails } from "./import.js";
+import { importDiscordAPIDetails } from "../io/import.js";
 
 export default class DiscordScraper {
   #discord;
