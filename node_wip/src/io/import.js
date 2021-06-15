@@ -16,14 +16,14 @@ export const importMessageHistoryCount = () => {
   return config.history_count;
 };
 
-export const importScraperDelay = () => {
-  return config.scraper_delay;
+export const importDefaultScraperDelay = () => {
+  return config.default_scraper_delay;
 };
 
 export const importTimeOfPump = () => {
   let pumpTime;
 
-  if (pumpTime) {
+  if (config.time_of_pump) {
     try {
       const timeString = config.time_of_pump;
       pumpTime = Date.parse(timeString);

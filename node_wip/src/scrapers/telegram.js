@@ -6,11 +6,12 @@ import path from "path";
 import dirname from "es-dirname";
 
 import {
-  importScraperDelay,
+  importDefaultScraperDelay,
   importMessageHistoryCount,
   importTelegramAPIDetails,
   importTimeOfPump,
 } from "../io/import.js";
+import chalk from "chalk";
 
 // For Testing
 import fs from "fs";
@@ -108,6 +109,12 @@ export default class TelegramScraper {
     return messageResults.messages;
   }
 
+  /**
+   * @param  {object[]} messages
+   * @param  {object} groupConfigs
+   * @param  {string} coinPair
+   * @param  {object} coinList
+   */
   async parseMessages(messages, groupConfigs, coinPair, coinList) {
     // The regex ting here
     // look into asynchronous for loop
@@ -158,7 +165,7 @@ export default class TelegramScraper {
       // Matches is a variable outside this loop so this gets called more than
       // it needs to be called
       if (matches.length > matchLengthTracker) {
-        matches.forEach(function (x) {
+        matches.forEach((x) => {
           if (x < matchLengthTracker) {
             return;
           }
@@ -192,6 +199,13 @@ export default class TelegramScraper {
   }
 
   // Main function to be called from bot
+  /**
+   * @param  {string} bot
+   * @param  {string} groupName
+   * @param  {object} groupConfigs
+   * @param  {string} coinPair
+   * @param  {object} coinList
+   */
   async scrape(bot, groupName, groupConfigs, coinPair, coinList) {
     // This is for one instance of the scraper
 
@@ -199,16 +213,26 @@ export default class TelegramScraper {
     // Conditional check for bot and scraper in correlation with groupconfig
     // To ensure scraper doesn't scrape on different exchange
 
+    if (bot !== groupConfigs["bot"].toLowerCase()) {
+      console.log(
+        chalk.red(
+          `The bot input in your scraping config (${groupName}) does not tally with the currently selected exchange bot (${bot}).\n`
+        ) +
+          chalk.redBright(
+            `The Telegram scraper will not proceed. Please check your config file.\n`
+          )
+      );
+    }
 
     // Remove groupName in favour of getting the details from config file and performing an async loop
     let coinName;
 
     // const shortDelay = 1000;
-    const shortDelay = 5000;
-    const timeOffset = 2000;
+    const shortDelay = 500;
+    const timeOffset = 500;
     let firstPass = true;
     const pumpTime = importTimeOfPump();
-    const defaultRequestDelay = importScraperDelay();
+    const defaultRequestDelay = importDefaultScraperDelay();
     const peer = await this.getPumpGroupDetails(groupName);
     const messages = await this.getMessages(peer);
 

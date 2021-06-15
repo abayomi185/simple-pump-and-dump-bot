@@ -16,7 +16,16 @@ key_press:
   # trade_exit_key: ""
   panic_sell_key:
 
-scraper_delay: 1000 #Delay in ms. Required to prevent hitting API rate limit
+# Time helps bot know when to make more requests to telegram server
+# This can be left empty. The scraper_delay time would be used instead
+# YYYY-MM-DDTHH-MM-SS e.g 2021-06-12T16:00:00
+time_of_pump: #"2021-06-14T20:00"
+
+# Telegram has limited api requests and timeouts. Be conservative with this.
+default_scraper_delay: 1000 # Default delay in ms. Required to prevent hitting API rate limit.
+
+# No. of previous messages in group to scrape. Lower is fractionally faster
+history_count: 3
 
 # Discord integration
 discord:
@@ -27,11 +36,12 @@ telegram:
   # Retrieved coin will be capitalised
   api_id:
   api_hash:
+  # Group names need to be single word or separated with underscores
   groups:
-    pump_group_1:
+    kucoin_pump:
       bot: Kucoin
       group_name: kucoin_pumps
       prefix: "Coin is: " # "The coin is: " in "The coin is DOGE"
       alt_prefix: "https://trade.kucoin.com/" # Alternative prefix
       special_character: "" # '$' in $DOGE
-      suffix_to_split: "" # "-" in DOGE-USDT => DOGE
+      suffix_to_split: "-" # "-" in DOGE-USDT => DOGE

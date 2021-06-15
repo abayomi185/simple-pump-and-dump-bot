@@ -107,6 +107,8 @@ export default class KucoinBot {
     //loop here, some imports, some time based things
 
     let coinName;
+    let coinNameArray = [];
+    const counts = {};
     const isDiscordScraperAcitve = scraper.discordScraper ? true : false;
     const isTelegramScraperActive = scraper.telegramScraper ? true : false;
 
@@ -120,22 +122,30 @@ export default class KucoinBot {
       await Promise.all(
         Object.entries(scraperGroups).map(async (entry) => {
           // scrape(bot, groupName, groupConfigs, coinPair, coinList)
-          coinName = await scraper.telegramScraper.scrape(
-            bot,
-            entry[1].group_name,
-            entry[1],
-            this.#userConfig["trade_configs"][this.selectedConfig]["pairing"],
-            this.allTickers.data
+          coinNameArray.push(
+            await scraper.telegramScraper.scrape(
+              bot,
+              entry[1].group_name,
+              entry[1],
+              this.#userConfig["trade_configs"][this.selectedConfig]["pairing"],
+              this.allTickers.data
+            )
           );
         })
       );
     }
 
-    console.log(coinName);
+    coinNameArray.forEach((x) => {
+      counts[x] = (counts[x] || 0) + 1;
+    });
 
-    // TODO
-    // Amalgamate the coinNames from different groups before returning
+    if (Object.entries(counts).length !== 0) {
+      coinName = Object.keys(counts).reduce((a, b) =>
+        counts[a] > counts[b] ? a : b
+      );
+    }
 
+    // console.log(coinName);
     return coinName;
   }
 
@@ -143,9 +153,9 @@ export default class KucoinBot {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       if (this.selectedCoin) {
-        break
+        break;
       }
-      await new Promise((r) => setTimeout(r, 1))
+      await new Promise((r) => setTimeout(r, 1));
     }
   }
 
@@ -358,18 +368,22 @@ export default class KucoinBot {
     await this.getTradingAmount();
 
     // Scraper modifications
-    this.scrapeCoin().then(result => {this.selectedCoin = result})
+    this.scrapeCoin().then((result) => {
+      this.selectedCoin = result;
+    });
 
     // Scraper is untested, this can be added when scraper is confirmed to work
     // if (scraper.manual === true) {
     // this.selectedCoin = inquirerInputCoin();
-    inquirerInputCoin().then(result => {this.selectedCoin = result})
+    inquirerInputCoin().then((result) => {
+      this.selectedCoin = result;
+    });
     // }
 
     await this.checkInputCoinStatus();
 
     this.coinPair =
-      (await this.selectedCoin.toUpperCase()) +
+      this.selectedCoin.toUpperCase() +
       "-" +
       this.#userConfig["trade_configs"][this.selectedConfig]["pairing"];
 
@@ -384,6 +398,9 @@ export default class KucoinBot {
 
     this.getBaseCoinBalance();
     // await this.getBaseCoinBalance();
+
+    // TODO
+    // Limit order sell
 
     await this.checkMargin();
     await this.getSellOrderDetails();
