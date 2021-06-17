@@ -17,6 +17,8 @@ import { initScraperFromSelection, getSelectedGroups } from "./src/scrapers/scra
 import BinanceBot from "./src/bots/bot-binance.js";
 import KucoinBot from "./src/bots/bot-kucoin.js";
 
+import KeypressActions from "./src/io/keypress.js";
+
 header()
 export const coin_scraper = inquirerImportScraperConfig();
 export const crypto_exchange = importExchangeList();
@@ -35,6 +37,8 @@ export let scraper = {
 async function main() {
 
   connectToDB();
+
+  new KeypressActions()
 
   inquirerSelectedScrapers = await inquirerSelectScraper();
 
