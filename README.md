@@ -67,6 +67,12 @@ Good Luck!
   - Work has started on implementing Telegram scraper
   - Customisable "panic sell button" coined by AlphaAlex1 is being implemented in tandem
   - Delays to development due to upcoming exams.
+- 17-06-21
+  - Development has begun again
+  - Telegram scraper is fully functional and fast
+  - Different branches would be used for testing new features
+  - Key actions in the works
+  - Binance bot to be implemented soon in Node to rid python version
 <br/>
 <br/>
 <a href="https://www.buymeacoffee.com/abayomi185" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Fly me to the moon" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;"></a><br/>
