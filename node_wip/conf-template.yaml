@@ -44,4 +44,4 @@ telegram:
       prefix: "Coin is: " # "The coin is: " in "The coin is DOGE"
       alt_prefix: "https://trade.kucoin.com/" # Alternative prefix
       special_character: "" # '$' in $DOGE
-      suffix_to_split: "-" # "-" in DOGE-USDT => DOGE
+      suffix_to_split: "-USDT" # "-USDT" in DOGE-USDT => DOGE
