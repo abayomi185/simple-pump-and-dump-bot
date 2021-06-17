@@ -139,7 +139,7 @@ export default class TelegramScraper {
       const re2 = alt_prefix && new RegExp("(?<=(" + alt_prefix + "))\\w+");
       const re3 = special && new RegExp("(?<=(" + special + "))\\w+");
       const re4 =
-        suffix_split && new RegExp("\\b\\w+(?=(" + suffix_split + "\\w+))");
+        suffix_split && new RegExp("\\b\\w+(?=(" + suffix_split + "))");
       // const re1 = new RegExp(/\b\w[A-Z]+/);
 
       const match1 = re1 && messageObject["message"].match(re1);

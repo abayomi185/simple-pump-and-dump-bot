@@ -382,6 +382,10 @@ export default class KucoinBot {
 
     await this.checkInputCoinStatus();
 
+    await (async () => {
+      console.log(this.selectedCoin);
+    })();
+
     this.coinPair =
       this.selectedCoin.toUpperCase() +
       "-" +
