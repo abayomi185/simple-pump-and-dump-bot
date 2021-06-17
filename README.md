@@ -72,6 +72,7 @@ Good Luck!
   - Telegram scraper is fully functional and fast
   - Different branches would be used for testing new features
   - Key actions in the works
+  - Update to Readme and possibly some documentation is being planned
   - Binance bot to be implemented soon in Node to rid python version
 <br/>
 <br/>
