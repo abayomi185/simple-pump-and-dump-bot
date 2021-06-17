@@ -29,8 +29,12 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/figlet": "^1.5.1",
+    "@types/inquirer": "^7.3.1",
     "@types/js-yaml": "^4.0.1",
     "@types/node": "^15.12.2",
+    "@types/sqlite3": "^3.1.7",
+    "@types/ws": "^7.4.4",
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
     "ts-node": "^10.0.0",

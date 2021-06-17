@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "ES2020",
+    "module": "ESNext",
     "rootDir": "./",
     "outDir": "./build",
+    "allowJs": true,
     "esModuleInterop": true,
-    "strict": true,
-    "moduleResolution": "node"
+    "strict": false,
+    "moduleResolution": "node",
+    "skipLibCheck": true
   }
 }

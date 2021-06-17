@@ -231,7 +231,7 @@ export default class KucoinBot {
           await new Promise((r) => setTimeout(r, interval));
         }
       } catch {
-        console.log("Buy order details not received yet");
+        console.log("\nBuy order details not received yet");
       }
       if (this.sellOrderId) {
         break;

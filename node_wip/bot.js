@@ -24,7 +24,6 @@ export const exchange_color = exchangeColors;
 export let inquirerSelectedScrapers;
 export let selectedScraperGroups;
 
-export let manualEntry; // Option to disable manual entry; future use
 export let scraper = {
   manual: null,
   telegramScraper: null,
