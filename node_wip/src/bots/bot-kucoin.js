@@ -382,14 +382,14 @@ export default class KucoinBot {
 
     await this.checkInputCoinStatus();
 
-    await (async () => {
-      console.log(this.selectedCoin);
-    })();
-
     this.coinPair =
       this.selectedCoin.toUpperCase() +
       "-" +
       this.#userConfig["trade_configs"][this.selectedConfig]["pairing"];
+
+    await (async () => {
+      console.log(this.coinPair);
+    })();
 
     // Block not in use
     // await this.getTicker();
