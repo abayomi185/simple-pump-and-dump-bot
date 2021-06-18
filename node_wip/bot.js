@@ -14,10 +14,10 @@ import { connectToDB } from "./src/io/db.js";
 
 import { initScraperFromSelection, getSelectedGroups } from "./src/scrapers/scraper.js"
 
+import KeypressActions from "./src/io/keypress.js";
+
 import BinanceBot from "./src/bots/bot-binance.js";
 import KucoinBot from "./src/bots/bot-kucoin.js";
-
-import KeypressActions from "./src/io/keypress.js";
 
 header()
 export const coin_scraper = inquirerImportScraperConfig();
@@ -26,6 +26,7 @@ export const exchange_color = exchangeColors;
 export let inquirerSelectedScrapers;
 export let selectedScraperGroups;
 
+export let keypressActions = new KeypressActions()
 export let scraper = {
   manual: null,
   telegramScraper: null,
@@ -37,8 +38,6 @@ export let scraper = {
 async function main() {
 
   connectToDB();
-
-  new KeypressActions()
 
   inquirerSelectedScrapers = await inquirerSelectScraper();
 

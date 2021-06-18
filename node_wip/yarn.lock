@@ -1458,11 +1458,6 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-keypress@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/keypress/-/keypress-0.2.1.tgz#1e80454250018dbad4c3fe94497d6e67b6269c77"
-  integrity sha1-HoBFQlABjbrUw/6USX1uZ7YmnHc=
-
 kucoin-node-sdk@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/kucoin-node-sdk/-/kucoin-node-sdk-1.0.3.tgz#609c40736896b9cde82c49758d934114598dbec6"

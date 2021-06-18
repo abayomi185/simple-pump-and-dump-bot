@@ -8,12 +8,10 @@ import {
   inquirerInputCoin,
 } from "../interface/prompts.js";
 import { insertIntoDB, closeDB } from "../io/db.js";
-import { scraper, selectedScraperGroups } from "../../bot.js";
+import { keypressActions, scraper, selectedScraperGroups } from "../../bot.js";
 
 import path from "path";
 import dirname from "es-dirname";
-
-// import { telegramScraper } from "../bot.js";
 
 const bot = "kucoin";
 const directory = path.join(dirname(), "../../#kucoin/");
@@ -38,6 +36,8 @@ export default class KucoinBot {
     this.selectedCoin;
     this.dbBuyOrder = {};
     this.dbSellOrder = {};
+
+    // Variables to track key actions
   }
 
   // getters and setter, get and set value of private object variables outside the class bounds
@@ -397,6 +397,12 @@ export default class KucoinBot {
 
     await this.marketBuyOrder();
 
+    // TODO
+    //Begin key actions here. Be weary of dependent async processes
+    keypressActions.startKeypressListen().then((action) => {
+      //call function and pass action
+    })
+
     this.getBuyOrderDetails();
     // await this.getBuyOrderDetails();
 
@@ -435,5 +441,3 @@ export default class KucoinBot {
     // await this.displayTimeDuration()
   }
 }
-
-// if telegramScraper

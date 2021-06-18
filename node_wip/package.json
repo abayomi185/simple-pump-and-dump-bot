@@ -23,7 +23,6 @@
     "figlet": "^1.5.0",
     "inquirer": "^8.0.0",
     "js-yaml": "^4.1.0",
-    "keypress": "^0.2.1",
     "kucoin-node-sdk": "^1.0.3",
     "sqlite3": "^5.0.2",
     "uuid": "^8.3.2"
