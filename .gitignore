@@ -1,5 +1,6 @@
 .venv
-.vscode
+.vscode/*
+!.vscode/launch.json
 .secrets.yaml
 secrets*.yaml
 *.db
@@ -7,3 +8,4 @@ secrets*.yaml
 node_modules
 conf.yaml
 telegram.json
+settings.json
