@@ -19,6 +19,8 @@ import KeypressActions from "./src/io/keypress.js";
 import BinanceBot from "./src/bots/bot-binance.js";
 import KucoinBot from "./src/bots/bot-kucoin.js";
 
+import { keyMap } from "./src/io/keymap.js"
+
 header()
 export const coin_scraper = inquirerImportScraperConfig();
 export const crypto_exchange = importExchangeList();

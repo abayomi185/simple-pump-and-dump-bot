@@ -388,7 +388,7 @@ export default class KucoinBot {
       this.#userConfig["trade_configs"][this.selectedConfig]["pairing"];
 
     await (async () => {
-      console.log(this.coinPair);
+      console.log("\n" + this.coinPair + "\n");
     })();
 
     // Block not in use
@@ -399,9 +399,15 @@ export default class KucoinBot {
 
     // TODO
     //Begin key actions here. Be weary of dependent async processes
-    keypressActions.startKeypressListen().then((action) => {
-      //call function and pass action
-    })
+    (async () => {
+      process.stdin.on("keypress", function (ch, key) {
+        keypressActions.enableKeypress();
+        keypressActions.testListen(key).then((result) => {
+          console.log(result);
+          //Call function here
+        });
+      });
+    })();
 
     this.getBuyOrderDetails();
     // await this.getBuyOrderDetails();
