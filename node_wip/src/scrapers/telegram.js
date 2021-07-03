@@ -234,13 +234,12 @@ export default class TelegramScraper {
     const pumpTime = importTimeOfPump();
     const defaultRequestDelay = importDefaultScraperDelay();
     const peer = await this.getPumpGroupDetails(groupName);
-    const messages = await this.getMessages(peer);
-
+    
     // console.log(messages);
-
+    
     // Loop the loop here; break if output is assigned
     // Condition to ensure it is a coin name that was retrieved
-
+    
     // This could be a while true
     while (coinName == null) {
       // Put timeout here for API requests
@@ -248,8 +247,8 @@ export default class TelegramScraper {
         const currentTime = Date.now();
         if (currentTime >= pumpTime - timeOffset) {
           firstPass
-            ? (firstPass = false)
-            : await new Promise((r) => setTimeout(r, shortDelay));
+          ? (firstPass = false)
+          : await new Promise((r) => setTimeout(r, shortDelay));
         } else {
           // Wait until timeOffset seconds before the pump
           let timeDiff = pumpTime - currentTime - timeOffset;
@@ -259,7 +258,8 @@ export default class TelegramScraper {
           await new Promise((r) => setTimeout(r, timeDiff));
         }
       }
-
+      
+      const messages = await this.getMessages(peer);
       coinName = await this.parseMessages(
         messages,
         groupConfigs,
