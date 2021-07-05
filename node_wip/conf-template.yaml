@@ -22,7 +22,7 @@ key_press:
 time_of_pump: #"2021-06-14T20:00"
 
 # Telegram has limited api requests and timeouts. Be conservative with this.
-default_scraper_delay: 1000 # Default delay in ms. Required to prevent hitting API rate limit.
+default_scraper_delay: 100 # Default delay in ms. Required to prevent hitting API rate limit.
 
 # No. of previous messages in group to scrape. Lower is fractionally faster
 history_count: 3

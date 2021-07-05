@@ -17,7 +17,7 @@ export const importMessageHistoryCount = () => {
 };
 
 export const importDefaultScraperDelay = () => {
-  return config.default_scraper_delay;
+  return config.scraper_delay;
 };
 
 export const importTimeOfPump = () => {

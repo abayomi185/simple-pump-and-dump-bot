@@ -218,9 +218,9 @@ export default class TelegramScraper {
         chalk.red(
           `The bot input in your scraping config (${groupName}) does not tally with the currently selected exchange bot (${bot}).\n`
         ) +
-          chalk.redBright(
-            `The Telegram scraper will not proceed. Please check your config file.\n`
-          )
+        chalk.redBright(
+          `The Telegram scraper will not proceed. Please check your config file.\n`
+        )
       );
     }
 
@@ -228,37 +228,39 @@ export default class TelegramScraper {
     let coinName;
 
     // const shortDelay = 1000;
-    const shortDelay = 500;
-    const timeOffset = 500;
+    // const shortDelay = 250;
+    // const timeOffset = 250;
     let firstPass = true;
     const pumpTime = importTimeOfPump();
-    const defaultRequestDelay = importDefaultScraperDelay();
+    const requestDelay = importDefaultScraperDelay();
     const peer = await this.getPumpGroupDetails(groupName);
-    
+
     // console.log(messages);
-    
+
     // Loop the loop here; break if output is assigned
     // Condition to ensure it is a coin name that was retrieved
-    
+
     // This could be a while true
     while (coinName == null) {
       // Put timeout here for API requests
       if (pumpTime) {
         const currentTime = Date.now();
-        if (currentTime >= pumpTime - timeOffset) {
+        if (currentTime >= pumpTime - requestDelay) {
+          const timeDiff = pumpTime - currentTime
           firstPass
-          ? (firstPass = false)
-          : await new Promise((r) => setTimeout(r, shortDelay));
+            ? (async () => {
+              firstPass = false;
+              await new Promise((r) => setTimeout(r, timeDiff-(0.1*requestDelay)));
+            })
+            : await new Promise((r) => setTimeout(r, requestDelay));
         } else {
           // Wait until timeOffset seconds before the pump
-          let timeDiff = pumpTime - currentTime - timeOffset;
-          if (timeDiff < 0) {
-            timeDiff = shortDelay;
-          }
+          let timeDiff = pumpTime - (currentTime - requestDelay);
+          (timeDiff <= 0) && (timeDiff = 0)
           await new Promise((r) => setTimeout(r, timeDiff));
         }
       }
-      
+
       const messages = await this.getMessages(peer);
       coinName = await this.parseMessages(
         messages,
@@ -272,7 +274,7 @@ export default class TelegramScraper {
       }
 
       if (!pumpTime) {
-        await new Promise((r) => setTimeout(r, defaultRequestDelay));
+        await new Promise((r) => setTimeout(r, requestDelay));
       }
     }
 
