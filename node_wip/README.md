@@ -14,6 +14,8 @@ clone repo and change directory to ```node_wip```
   cd simple-pump-and-dump-bot/node_wip
 ```
 
+Install the Node modules: ```yarn install```
+
 Rename ```conf-template.yaml``` to ```conf.yaml```
 
 To use/test the Telegram coin name scraper, fill in your api details and group configs into the conf.yaml file
