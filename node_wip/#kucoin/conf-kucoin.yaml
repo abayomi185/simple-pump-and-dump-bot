@@ -16,7 +16,7 @@ trade_configs:
     #Profit margin multiplier; 0.5 equals 50% gain
     profit_margin: 0.5
     #Stop loss multiplier; 1.0 equals 0% intended loss
-    stop_loss: 0.9
+    stop_loss: 0.8
     #Amount from wallet to use for trade sell; range 0 to 1
     sell_qty_from_wallet: 1
     #Refresh interval in milliseconds to check market for current price
