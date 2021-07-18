@@ -206,6 +206,8 @@ export default class KucoinBot {
     // Execute sell order if profit margin is reached
     const margin =
       this.#userConfig["trade_configs"][this.selectedConfig]["profit_margin"];
+    const stop_loss =
+      this.#userConfig["trade_configs"][this.selectedConfig]["stop_loss"] ? this.#userConfig["trade_configs"][this.selectedConfig]["stop_loss"] : 1.0;
     const interval =
       this.#userConfig["trade_configs"][this.selectedConfig][
         "refresh_interval"
@@ -222,6 +224,16 @@ export default class KucoinBot {
           (parseFloat(this.buyOrder["data"]["dealFunds"]) /
             parseFloat(this.buyOrder["data"]["dealSize"])) *
             (1.0 + margin)
+        ) {
+          if (this.sellOrderId == null) {
+            await this.marketSellOrder();
+            break;
+          }
+        } else if (
+          parseFloat(this.ticker["data"]["price"]) <=
+          (parseFloat(this.buyOrder["data"]["dealFunds"]) /
+            parseFloat(this.buyOrder["data"]["dealSize"])) *
+            (stop_loss)
         ) {
           if (this.sellOrderId == null) {
             await this.marketSellOrder();
