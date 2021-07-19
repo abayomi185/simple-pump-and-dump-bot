@@ -5,7 +5,7 @@
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/node_wip",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "/usr/local/bin/npm",
       "runtimeArgs": ["run-script", "debug"],
       "console": "integratedTerminal"
     }
